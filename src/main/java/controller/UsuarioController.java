@@ -4,18 +4,13 @@ import model.Usuario;
 import services.UsuarioService;
 
 public class UsuarioController {
-    private final UsuarioService usuarioService;
+    private final UsuarioService usuarioService = new UsuarioService();
 
-    public UsuarioController() {
-        this.usuarioService = new UsuarioService();
+    public Usuario login(String email, String password) {
+        return usuarioService.login(email, password); // [cite: 9]
     }
 
-    public String login(String email, String password) {
-        Usuario usuario = usuarioService.login(email, password);
-        if (usuario != null) {
-            return "¡Bienvenido, " + usuario.getNombre() + "! Inicio de sesión correcto.";
-        } else {
-            return "Error: Credenciales incorrectas.";
-        }
+    public boolean registrar(Usuario u) {
+        return usuarioService.registrarUsuario(u); // [cite: 9]
     }
 }

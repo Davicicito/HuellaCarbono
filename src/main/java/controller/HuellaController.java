@@ -5,21 +5,17 @@ import services.HuellaService;
 import java.util.List;
 
 public class HuellaController {
-    private final HuellaService huellaService;
-
-    public HuellaController() {
-        this.huellaService = new HuellaService();
-    }
+    private final HuellaService huellaService = new HuellaService();
 
     public void guardarHuella(Huella h) {
-        huellaService.registrarNuevaHuella(h);
-    }
-
-    public double getImpactoTotal(int idUsuario) {
-        return huellaService.consultarImpactoTotal(idUsuario);
+        huellaService.registrarNuevaHuella(h); //
     }
 
     public List<Huella> getHistorial(int idUsuario) {
-        return huellaService.obtenerHistorial(idUsuario);
+        return huellaService.obtenerHistorial(idUsuario); // [cite: 23, 86]
+    }
+
+    public double getImpactoTotal(int idUsuario) {
+        return huellaService.consultarImpactoTotal(idUsuario); // [cite: 17, 19]
     }
 }

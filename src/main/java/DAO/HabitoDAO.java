@@ -23,14 +23,17 @@ public class HabitoDAO {
     // --- MÉTODOS CRUD [cite: 83] ---
 
     public void guardar(Habito habito) {
+        Session session = Connection.getInstance().openSession();
         Transaction tx = null;
-        try (Session session = Connection.getInstance().openSession()) {
+        try {
             tx = session.beginTransaction();
             session.persist(habito);
             tx.commit();
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
+            if (tx != null && tx.isActive()) tx.rollback(); // Verificamos que la tx esté activa
             e.printStackTrace();
+        } finally {
+            session.close(); // Cerramos siempre al final
         }
     }
 
