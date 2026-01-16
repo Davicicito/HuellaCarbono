@@ -77,4 +77,8 @@ public class Huella {
         this.fecha = fecha;
     }
 
+    public String getNombreActividad() {
+        return (idActividad != null) ? idActividad.getNombre() : "Actividad";
+    }
+
 }

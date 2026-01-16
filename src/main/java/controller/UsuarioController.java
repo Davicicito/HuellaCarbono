@@ -7,10 +7,10 @@ public class UsuarioController {
     private final UsuarioService usuarioService = new UsuarioService();
 
     public Usuario login(String email, String password) {
-        return usuarioService.login(email, password); // [cite: 9]
+        return usuarioService.login(email, password);
     }
 
     public boolean registrar(Usuario u) {
-        return usuarioService.registrarUsuario(u); // [cite: 9]
+        return usuarioService.registrarUsuario(u);
     }
 }

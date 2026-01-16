@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<HBox prefHeight="720.0" prefWidth="1280.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginViewController">
+    <children>
+        <VBox alignment="CENTER" spacing="30.0" styleClass="left-panel" HBox.hgrow="ALWAYS">
+            <padding>
+                <Insets left="50.0" right="50.0" />
+            </padding>
+            <children>
+                <VBox maxWidth="550.0" spacing="40.0" alignment="CENTER_LEFT">
+                    <children>
+                        <VBox spacing="10.0">
+                            <children>
+                                <Label styleClass="title-label" text="EcoTrack" />
+                                <Label styleClass="title-label" text="Mide tu impacto.&#10;Cambia el mundo." wrapText="true" />
+                            </children>
+                        </VBox>
+
+                        <Label styleClass="description-text" text="Controla tu huella de carbono de forma intuitiva y recibe recomendaciones personalizadas para un futuro más sostenible." wrapText="true" />
+
+                        <HBox spacing="15.0" alignment="CENTER">
+                            <children>
+                                <VBox styleClass="info-card" HBox.hgrow="ALWAYS" spacing="12" alignment="CENTER_LEFT">
+                                    <children>
+                                        <Label text="🌱" style="-fx-font-size: 24px;"/>
+                                        <Label styleClass="card-title" text="Seguimiento" />
+                                        <Label styleClass="card-text" text="Registra tus actividades diarias" wrapText="true" />
+                                    </children>
+                                </VBox>
+
+                                <VBox styleClass="info-card" HBox.hgrow="ALWAYS" spacing="12" alignment="CENTER_LEFT">
+                                    <children>
+                                        <Label text="📉" style="-fx-font-size: 24px;"/>
+                                        <Label styleClass="card-title" text="Análisis" />
+                                        <Label styleClass="card-text" text="Visualiza tu impacto ambiental" wrapText="true" />
+                                    </children>
+                                </VBox>
+
+                                <VBox styleClass="info-card" HBox.hgrow="ALWAYS" spacing="12" alignment="CENTER_LEFT">
+                                    <children>
+                                        <Label text="🍃" style="-fx-font-size: 24px;"/>
+                                        <Label styleClass="card-title" text="Mejora" />
+                                        <Label styleClass="card-text" text="Reduce tu huella paso a paso" wrapText="true" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+
+        <VBox alignment="CENTER" styleClass="right-panel" HBox.hgrow="ALWAYS">
+            <children>
+                <VBox maxWidth="400.0" spacing="30.0" alignment="CENTER_LEFT">
+                    <padding>
+                        <Insets left="40.0" right="40.0" />
+                    </padding>
+                    <children>
+                        <VBox spacing="5.0">
+                            <children>
+                                <Label styleClass="form-title" text="Bienvenido de nuevo" />
+                                <Label text="Ingresa tus credenciales para continuar" textFill="#6c757d" />
+                            </children>
+                        </VBox>
+
+                        <VBox spacing="20.0">
+                            <children>
+                                <VBox spacing="8.0">
+                                    <children>
+                                        <Label styleClass="input-label" text="Correo electrónico" />
+                                        <TextField fx:id="emailField" promptText="tu@email.com" styleClass="text-field-custom" />
+                                    </children>
+                                </VBox>
+                                <VBox spacing="8.0">
+                                    <children>
+                                        <Label styleClass="input-label" text="Contraseña" />
+                                        <PasswordField fx:id="passwordField" promptText="••••••••" styleClass="text-field-custom" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+
+                        <Button fx:id="loginButton" maxWidth="Infinity" mnemonicParsing="false" onAction="#handleLogin" styleClass="button-primary" text="Iniciar sesión" />
+
+                        <HBox alignment="CENTER" spacing="8.0">
+                            <children>
+                                <Label text="¿No tienes cuenta?" />
+                                <Label onMouseClicked="#showRegister" styleClass="link-text" text="Regístrate" />
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </children>
+</HBox>

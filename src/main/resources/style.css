@@ -1,0 +1,217 @@
+/* =========================================
+   ESTILOS GLOBALES Y LOGIN/REGISTRO
+   ========================================= */
+.root {
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+/* Panel Izquierdo con degradado verde exacto */
+.left-panel {
+    -fx-background-color: linear-gradient(to bottom right, #2d6a4f, #1b4332);
+}
+
+.title-label {
+    -fx-text-fill: white;
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+}
+
+.description-text {
+    -fx-text-fill: #d8f3dc;
+    -fx-font-size: 14px;
+}
+
+/* --- TARJETAS INFORMATIVAS (EFECTO FOTO) --- */
+.info-card {
+    /* Fondo verde claro con mucha transparencia para el efecto cristal */
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-background-radius: 20;
+    -fx-padding: 20;
+    -fx-min-height: 140;
+}
+
+.info-card:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.22);
+}
+
+.card-title {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.card-text {
+    -fx-text-fill: #e0f2f1;
+    -fx-font-size: 12px;
+}
+
+/* Panel Derecho (Blanco) */
+.right-panel {
+    -fx-background-color: white;
+}
+
+.form-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1b4332;
+}
+
+.input-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #495057;
+    -fx-font-weight: bold;
+}
+
+.text-field-custom {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 8;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 8;
+    -fx-padding: 10;
+}
+
+.button-primary {
+    -fx-background-color: #08a045;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-padding: 12 0;
+}
+
+.button-primary:hover {
+    -fx-background-color: #068a3b;
+}
+
+.link-text {
+    -fx-text-fill: #08a045;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+/* =========================================
+   ESTILOS DEL DASHBOARD / INICIO
+   ========================================= */
+
+/* Sidebar */
+.sidebar {
+    -fx-background-color: white;
+    -fx-border-color: #f0f0f0;
+    -fx-border-width: 0 1 0 0;
+}
+
+.sidebar-button-active {
+    -fx-background-color: #08a045;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-padding: 10 15;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #555;
+    -fx-padding: 10 15;
+}
+
+.sidebar-button-exit {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ef4444;
+    -fx-padding: 10 15;
+}
+
+/* Iconos Circulares Dashboard */
+.icon-circle-green { -fx-background-color: #e6f7ef; -fx-background-radius: 10; -fx-min-width: 40; -fx-min-height: 40; -fx-alignment: center; }
+.icon-circle-blue { -fx-background-color: #eef2ff; -fx-background-radius: 10; -fx-min-width: 40; -fx-min-height: 40; -fx-alignment: center; }
+.icon-circle-orange { -fx-background-color: #fff7ed; -fx-background-radius: 10; -fx-min-width: 40; -fx-min-height: 40; -fx-alignment: center; }
+.icon-circle-purple { -fx-background-color: #f5f3ff; -fx-background-radius: 10; -fx-min-width: 40; -fx-min-height: 40; -fx-alignment: center; }
+
+/* Badges Porcentaje */
+.badge-red { -fx-background-color: #fee2e2; -fx-text-fill: #ef4444; -fx-padding: 2 8; -fx-background-radius: 10; -fx-font-weight: bold; -fx-font-size: 11px; }
+.badge-green { -fx-background-color: #dcfce7; -fx-text-fill: #22c55e; -fx-padding: 2 8; -fx-background-radius: 10; -fx-font-weight: bold; -fx-font-size: 11px; }
+
+/* Tarjetas Estadísticas Dashboard */
+.stat-card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 10, 0, 0, 5);
+}
+.stat-label { -fx-text-fill: #71717a; -fx-font-size: 13px; -fx-padding: 10 0 0 0; }
+.stat-value { -fx-font-size: 26px; -fx-font-weight: bold; -fx-padding: 5 0; }
+.stat-sub { -fx-text-fill: #a1a1aa; -fx-font-size: 11px; }
+
+/* Contenedores Dashboard */
+.content-box { -fx-background-color: white; -fx-background-radius: 15; -fx-padding: 25; }
+.section-title { -fx-font-size: 16px; -fx-font-weight: bold; }
+
+.content-box-green { -fx-background-color: #f0fdf4; -fx-background-radius: 15; -fx-padding: 25; }
+.section-title-green { -fx-text-fill: #166534; -fx-font-weight: bold; -fx-font-size: 16px; }
+
+/* Recomendaciones */
+.recom-card { -fx-background-color: white; -fx-padding: 15; -fx-background-radius: 12; -fx-spacing: 10; }
+.badge-green-recom { -fx-background-color: #dcfce7; -fx-text-fill: #16a34a; -fx-padding: 4 10; -fx-background-radius: 20; -fx-font-size: 10px; -fx-font-weight: bold; }
+
+/* Barras Progreso */
+.eco-progress .track { -fx-background-color: #f4f4f5; -fx-background-radius: 10; }
+.eco-progress .bar { -fx-background-color: #10b981; -fx-background-radius: 10; }
+.progress-label { -fx-font-size: 13px; -fx-text-fill: #3f3f46; }
+
+/* Actividades Recientes */
+.activity-item {
+    -fx-background-color: #f0fdf4;
+    -fx-padding: 12 15;
+    -fx-background-radius: 12;
+}
+/* Botón + Nueva Huella */
+.button-new {
+    -fx-background-color: #08a045;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 12;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+/* Buscador y Combos */
+.search-field, .filter-combo {
+    -fx-background-color: white;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 8;
+}
+
+/* Tabla Moderna */
+.modern-table {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-border-color: transparent;
+    -fx-padding: 10;
+}
+
+.modern-table .column-header {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: transparent transparent #dee2e6 transparent;
+    -fx-padding: 15;
+}
+
+.modern-table .column-header .label {
+    -fx-text-fill: #1b4332;
+    -fx-font-weight: bold;
+}
+
+.modern-table .table-row-cell {
+    -fx-padding: 10;
+    -fx-border-color: transparent transparent #f1f3f5 transparent;
+}
+
+/* Etiqueta de categoría redondeada (Badge) */
+.category-badge-transporte {
+    -fx-background-color: #dcfce7;
+    -fx-text-fill: #16a34a;
+    -fx-padding: 5 12;
+    -fx-background-radius: 20;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}

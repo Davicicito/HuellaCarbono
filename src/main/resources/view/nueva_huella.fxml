@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="20.0" style="-fx-background-color: white; -fx-background-radius: 20; -fx-border-color: #dee2e6; -fx-border-radius: 20;" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.NuevaHuellaController">
+    <padding>
+        <Insets top="25" right="25" bottom="25" left="25"/>
+    </padding>
+    <children>
+        <VBox spacing="5.0">
+            <children>
+                <Label text="Nueva Huella de Carbono" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1b4332;" />
+            </children>
+        </VBox>
+
+        <GridPane vgap="15" hgap="15">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50" />
+                <ColumnConstraints percentWidth="50" />
+            </columnConstraints>
+            <children>
+                <VBox spacing="8.0" GridPane.columnSpan="2">
+                    <children>
+                        <Label text="Actividad" styleClass="input-label" style="-fx-font-weight: bold;" />
+                        <ComboBox fx:id="comboActividades" maxWidth="Infinity" promptText="Seleccionar actividad" styleClass="text-field-custom" />
+                    </children>
+                </VBox>
+
+                <VBox spacing="8.0" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                    <children>
+                        <Label text="Valor" styleClass="input-label" style="-fx-font-weight: bold;" />
+                        <TextField fx:id="txtValor" promptText="150" styleClass="text-field-custom" />
+                    </children>
+                </VBox>
+
+                <VBox spacing="8.0" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                    <children>
+                        <Label text="Unidad" styleClass="input-label" style="-fx-font-weight: bold;" />
+                        <ComboBox fx:id="comboUnidades" maxWidth="Infinity" styleClass="text-field-custom" />
+                    </children>
+                </VBox>
+
+                <VBox spacing="8.0" GridPane.rowIndex="2" GridPane.columnSpan="2">
+                    <children>
+                        <Label text="Fecha" styleClass="input-label" style="-fx-font-weight: bold;" />
+                        <DatePicker fx:id="datePicker" maxWidth="Infinity" styleClass="text-field-custom" />
+                    </children>
+                </VBox>
+            </children>
+        </GridPane>
+
+        <HBox spacing="15.0" alignment="CENTER" style="-fx-padding: 10 0 0 0;">
+            <children>
+                <Button text="Cancelar" onAction="#handleCancelar" prefWidth="140" style="-fx-background-color: white; -fx-border-color: #dee2e6; -fx-border-radius: 15; -fx-background-radius: 15; -fx-font-weight: bold; -fx-padding: 10; -fx-cursor: hand;" />
+                <Button text="Guardar" onAction="#handleGuardar" prefWidth="140" styleClass="button-primary" style="-fx-background-radius: 15; -fx-padding: 10;" />
+            </children>
+        </HBox>
+    </children>
+</VBox>
