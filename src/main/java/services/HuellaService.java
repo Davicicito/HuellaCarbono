@@ -29,15 +29,17 @@ public class HuellaService {
      */
     public List<Huella> obtenerHistorial(int idUsuario) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            // El JOIN FETCH es la clave para evitar el LazyInitializationException
             return session.createQuery(
-                            "SELECT h FROM Huella h JOIN FETCH h.idActividad WHERE h.idUsuario.id = :id ORDER BY h.fecha DESC",
-                            Huella.class)
+                            "SELECT h FROM Huella h " +
+                                    "JOIN FETCH h.idActividad a " +
+                                    "JOIN FETCH a.idCategoria " +
+                                    "WHERE h.idUsuario.id = :id " +
+                                    "ORDER BY h.fecha DESC", Huella.class)
                     .setParameter("id", idUsuario)
                     .list();
         } catch (Exception e) {
             e.printStackTrace();
-            return Collections.emptyList();
+            return java.util.Collections.emptyList();
         }
     }
     /**

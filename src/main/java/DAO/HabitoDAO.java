@@ -62,10 +62,14 @@ public class HabitoDAO {
     }
 
     public List<Habito> listarPorUsuario(int idUsuario) {
-        try (Session session = Connection.getInstance().openSession()) {
-            Query<Habito> query = session.createQuery(BUSCAR_POR_USUARIO, Habito.class);
-            query.setParameter("idUsuario", idUsuario);
-            return query.getResultList();
+        try (Session session = Connection.getInstance().openSession()) { //
+            return session.createQuery(
+                            "SELECT h FROM Habito h " +
+                                    "JOIN FETCH h.idActividad a " +
+                                    "JOIN FETCH a.idCategoria " +
+                                    "WHERE h.idUsuario.id = :idUsuario", Habito.class)
+                    .setParameter("idUsuario", idUsuario)
+                    .getResultList();
         }
     }
 

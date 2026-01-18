@@ -1,158 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
 <BorderPane prefHeight="720.0" prefWidth="1280.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.InicioViewController">
-
     <left>
         <VBox prefWidth="250.0" spacing="10.0" styleClass="sidebar">
-            <padding>
-                <Insets top="30.0" left="20.0" right="20.0" />
-            </padding>
+            <padding><Insets top="30.0" left="20.0" right="20.0" /></padding>
             <children>
                 <HBox spacing="10.0" alignment="CENTER_LEFT">
                     <children>
-                        <StackPane styleClass="logo-container">
-                            <Label text="🍃" style="-fx-font-size: 20px;" />
-                        </StackPane>
-                        <VBox>
-                            <Label text="EcoTrack" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
-                            <Label text="Huella de Carbono" style="-fx-font-size: 10px; -fx-text-fill: gray;" />
-                        </VBox>
+                        <StackPane styleClass="icon-circle-green"><Label text="🍃" /></StackPane>
+                        <VBox><Label text="EcoTrack" style="-fx-font-weight: bold;"/><Label text="Huella de Carbono" style="-fx-font-size: 10px;"/></VBox>
                     </children>
                 </HBox>
-
                 <Separator prefHeight="30.0" />
-
-                <Button maxWidth="Infinity" text="🏠 Inicio" styleClass="sidebar-button-active" />
+                <Button maxWidth="Infinity" text="🏠 Dashboard" styleClass="sidebar-button-active" />
                 <Button maxWidth="Infinity" text="👣 Mis Huellas" styleClass="sidebar-button" onAction="#irAMisHuellas" />
-                <Button maxWidth="Infinity" text="📅 Hábitos" styleClass="sidebar-button" />
+                <Button maxWidth="Infinity" text="📅 Hábitos" styleClass="sidebar-button" onAction="#irAHabitos" />
                 <Button maxWidth="Infinity" text="📊 Análisis" styleClass="sidebar-button" />
                 <Button maxWidth="Infinity" text="💡 Recomendaciones" styleClass="sidebar-button" />
-
                 <Region VBox.vgrow="ALWAYS" />
                 <Button maxWidth="Infinity" text="⚙️ Configuración" styleClass="sidebar-button" />
                 <Button maxWidth="Infinity" text="🚪 Cerrar sesión" styleClass="sidebar-button-exit" onAction="#handleLogout" />
             </children>
         </VBox>
     </left>
-
     <center>
-        <ScrollPane fitToWidth="true" style="-fx-background-color: #f8f9fa;" styleClass="edge-to-edge">
+        <ScrollPane fitToWidth="true" styleClass="edge-to-edge">
             <content>
                 <VBox spacing="25.0" style="-fx-background-color: #f8f9fa;">
-                    <padding>
-                        <Insets top="30.0" left="40.0" right="40.0" bottom="30.0" />
-                    </padding>
+                    <padding><Insets top="30.0" left="40.0" right="40.0" bottom="30.0" /></padding>
                     <children>
                         <VBox spacing="5.0">
-                            <children>
-                                <Label text="Inicio" style="-fx-font-size: 28px; -fx-font-weight: bold;" />
-                                <Label text="Resumen de tu impacto ambiental" style="-fx-text-fill: gray;" />
-                            </children>
+                            <Label text="Dashboard" style="-fx-font-size: 28px; -fx-font-weight: bold;" />
+                            <Label text="Resumen de tu impacto ambiental" style="-fx-text-fill: gray;" />
                         </VBox>
 
                         <HBox spacing="20.0">
-                            <children>
-                                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                                    <children>
-                                        <HBox alignment="CENTER">
-                                            <StackPane styleClass="icon-circle-green"><Label text="🍃" /></StackPane>
-                                            <Region HBox.hgrow="ALWAYS" />
-                                            <Label fx:id="lblVariacionHuella" text="0%" styleClass="badge-green" />
-                                        </HBox>
-                                        <Label text="Huella Total" styleClass="stat-label" />
-                                        <Label fx:id="lblHuellaTotal" text="0.0 kg" styleClass="stat-value" />
-                                        <Label text="CO₂ registrado" styleClass="stat-sub" />
-                                    </children>
-                                </VBox>
-                                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                                    <children>
-                                        <HBox alignment="CENTER">
-                                            <StackPane styleClass="icon-circle-blue"><Label text="📅" /></StackPane>
-                                            <Region HBox.hgrow="ALWAYS" />
-                                            <Label text="+0" styleClass="badge-green" />
-                                        </HBox>
-                                        <Label text="Actividades" styleClass="stat-label" />
-                                        <Label fx:id="lblNumActividades" text="0" styleClass="stat-value" />
-                                        <Label text="Registradas" styleClass="stat-sub" />
-                                    </children>
-                                </VBox>
-                                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                                    <children>
-                                        <HBox alignment="CENTER">
-                                            <StackPane styleClass="icon-circle-orange"><Label text="📈" /></StackPane>
-                                            <Region HBox.hgrow="ALWAYS" />
-                                            <Label text="0%" styleClass="badge-green" />
-                                        </HBox>
-                                        <Label text="Promedio Diario" styleClass="stat-label" />
-                                        <Label fx:id="lblPromedio" text="0.0 kg" styleClass="stat-value" />
-                                        <Label text="CO₂ por día" styleClass="stat-sub" />
-                                    </children>
-                                </VBox>
-                                <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                                    <children>
-                                        <HBox alignment="CENTER">
-                                            <StackPane styleClass="icon-circle-purple"><Label text="🎯" /></StackPane>
-                                            <Region HBox.hgrow="ALWAYS" />
-                                            <Label text="+0" styleClass="badge-green" />
-                                        </HBox>
-                                        <Label text="Hábitos Activos" styleClass="stat-label" />
-                                        <Label text="--" styleClass="stat-value" />
-                                        <Label text="Frecuentes" styleClass="stat-sub" />
-                                    </children>
-                                </VBox>
-                            </children>
-                        </HBox>
-
-                        <HBox spacing="20.0" VBox.vgrow="ALWAYS">
-                            <children>
-                                <VBox styleClass="content-box" HBox.hgrow="ALWAYS" prefWidth="600">
-                                    <children>
-                                        <Label text="Impacto por Categoría" styleClass="section-title" />
-                                        <VBox spacing="15" style="-fx-padding: 20 0 0 0;">
-                                            <VBox spacing="5">
-                                                <HBox>
-                                                    <Label fx:id="lblCat1Nombre" text="Total Acumulado" styleClass="progress-label" />
-                                                    <Region HBox.hgrow="ALWAYS" />
-                                                    <Label fx:id="lblCat1Valor" text="0.0 kg CO₂" styleClass="progress-label" />
-                                                </HBox>
-                                                <ProgressBar fx:id="pgCat1" progress="0.0" maxWidth="Infinity" styleClass="eco-progress" />
-                                            </VBox>
-                                        </VBox>
-                                    </children>
-                                </VBox>
-
-                                <VBox styleClass="content-box" HBox.hgrow="ALWAYS">
-                                    <children>
-                                        <Label text="Actividades Recientes" styleClass="section-title" />
-                                        <VBox fx:id="vboxActividades" spacing="12" style="-fx-padding: 20 0 0 0;">
-                                        </VBox>
-                                    </children>
-                                </VBox>
-                            </children>
-                        </HBox>
-
-                        <VBox styleClass="content-box-green">
-                            <children>
-                                <Label text="💡 Recomendaciones del Día" styleClass="section-title-green" />
-                                <HBox spacing="15" style="-fx-padding: 15 0 0 0;">
-                                    <VBox styleClass="recom-card" HBox.hgrow="ALWAYS">
-                                        <Label text="Usa bicicleta o camina en distancias cortas" wrapText="true" />
-                                        <Label text="-30 kg CO₂" styleClass="badge-green-recom" />
-                                    </VBox>
-                                    <VBox styleClass="recom-card" HBox.hgrow="ALWAYS">
-                                        <Label text="Opta por el transporte público en vez del coche" wrapText="true" />
-                                        <Label text="-45 kg CO₂" styleClass="badge-green-recom" />
-                                    </VBox>
-                                    <VBox styleClass="recom-card" HBox.hgrow="ALWAYS">
-                                        <Label text="Compartir coche con compañeros reduce emisiones" wrapText="true" />
-                                        <Label text="-20 kg CO₂" styleClass="badge-green-recom" />
-                                    </VBox>
+                            <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                                <HBox alignment="CENTER">
+                                    <StackPane styleClass="icon-circle-green"><Label text="🍃" /></StackPane>
+                                    <Region HBox.hgrow="ALWAYS" /><Label fx:id="lblVariacionHuella" text="-12%" styleClass="badge-red" />
                                 </HBox>
-                            </children>
+                                <Label text="Huella Total" styleClass="stat-label" />
+                                <Label fx:id="lblHuellaTotal" text="0.0 kg" styleClass="stat-value" />
+                                <Label text="CO₂ registrado" styleClass="stat-sub" />
+                            </VBox>
+                            <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                                <HBox alignment="CENTER">
+                                    <StackPane styleClass="icon-circle-blue"><Label text="📅" /></StackPane>
+                                    <Region HBox.hgrow="ALWAYS" /><Label text="+4" styleClass="badge-green" />
+                                </HBox>
+                                <Label text="Actividades" styleClass="stat-label" />
+                                <Label fx:id="lblNumActividades" text="0" styleClass="stat-value" />
+                                <Label text="Registradas" styleClass="stat-sub" />
+                            </VBox>
+                            <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                                <HBox alignment="CENTER">
+                                    <StackPane styleClass="icon-circle-orange"><Label text="📈" /></StackPane>
+                                    <Region HBox.hgrow="ALWAYS" /><Label text="-8%" styleClass="badge-red" />
+                                </HBox>
+                                <Label text="Promedio Diario" styleClass="stat-label" />
+                                <Label fx:id="lblPromedio" text="0.0 kg" styleClass="stat-value" />
+                                <Label text="CO₂ por día" styleClass="stat-sub" />
+                            </VBox>
+                            <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                                <HBox alignment="CENTER">
+                                    <StackPane styleClass="icon-circle-purple"><Label text="🎯" /></StackPane>
+                                    <Region HBox.hgrow="ALWAYS" /><Label text="+2" styleClass="badge-green" />
+                                </HBox>
+                                <Label text="Hábitos Activos" styleClass="stat-label" />
+                                <Label text="--" styleClass="stat-value" />
+                                <Label text="Frecuentes" styleClass="stat-sub" />
+                            </VBox>
+                        </HBox>
+
+                        <HBox spacing="20.0">
+                            <VBox styleClass="content-box" HBox.hgrow="ALWAYS">
+                                <Label text="Impacto por Categoría" styleClass="section-title" />
+                                <VBox spacing="15" style="-fx-padding: 20 0 0 0;">
+                                    <HBox><Label text="Transporte"/><Region HBox.hgrow="ALWAYS"/><Label fx:id="lblCat1Valor" text="0.0 kg"/></HBox>
+                                    <ProgressBar fx:id="pgCat1" progress="0.0" maxWidth="Infinity" styleClass="eco-progress" />
+                                </VBox>
+                            </VBox>
+                            <VBox styleClass="content-box" prefWidth="450">
+                                <Label text="Actividades Recientes" styleClass="section-title" />
+                                <VBox fx:id="vboxActividades" spacing="10" style="-fx-padding: 15 0 0 0;" />
+                            </VBox>
+                        </HBox>
+
+                        <VBox styleClass="content-box" style="-fx-background-color: #f0fdf4;">
+                            <Label text="💡 Recomendaciones del Día" style="-fx-text-fill: #065f46; -fx-font-weight: bold;" />
+                            <HBox spacing="15" style="-fx-padding: 15 0 0 0;">
+                                <VBox styleClass="recom-card" HBox.hgrow="ALWAYS"><Label text="Usa bicicleta..."/><Label text="-30 kg CO₂" styleClass="badge-green"/></VBox>
+                                <VBox styleClass="recom-card" HBox.hgrow="ALWAYS"><Label text="Transporte público..."/><Label text="-45 kg CO₂" styleClass="badge-green"/></VBox>
+                            </HBox>
                         </VBox>
                     </children>
                 </VBox>

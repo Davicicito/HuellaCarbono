@@ -21,12 +21,11 @@ import java.util.Map;
 public class InicioViewController {
 
     @FXML private Label lblHuellaTotal;
-    @FXML private Label lblNumActividades;
+    @FXML private Label lblNumActividades; // RESTAURADO
     @FXML private Label lblPromedio;
     @FXML private Label lblVariacionHuella;
     @FXML private VBox vboxActividades;
 
-    // Elementos para las barras de progreso reales
     @FXML private Label lblCat1Nombre;
     @FXML private Label lblCat1Valor;
     @FXML private ProgressBar pgCat1;
@@ -36,40 +35,32 @@ public class InicioViewController {
     @FXML
     public void initialize() {
         Usuario usuarioActual = Sesion.getInstancia().getUsuario();
-
         if (usuarioActual != null) {
-            // 1. Cargar tarjetas estadísticas
             cargarEstadisticas(usuarioActual.getId().longValue());
-            // 2. Cargar lista de actividades recientes
             cargarListaActividades(usuarioActual.getId());
         }
     }
 
     private void cargarEstadisticas(long userId) {
         Map<String, Double> stats = huellaService.obtenerEstadisticas(userId);
+        double total = stats.getOrDefault("total", 0.0);
+        double conteo = stats.getOrDefault("conteo", 0.0);
 
-        double total = stats.get("total");
-        double conteo = stats.get("conteo");
-
-        // Seteamos los valores de la base de datos (esto pisa el texto del FXML)
         lblHuellaTotal.setText(String.format("%.1f kg", total));
         lblNumActividades.setText(String.valueOf((int)conteo));
 
         double promedio = (conteo > 0) ? total / 30 : 0.0;
         lblPromedio.setText(String.format("%.1f kg", promedio));
 
-        // Actualizamos las barras de progreso con el total
         if (lblCat1Valor != null) {
             lblCat1Valor.setText(String.format("%.1f kg CO₂", total));
-            pgCat1.setProgress(Math.min(total / 500.0, 1.0)); // Ejemplo: 500kg es el 100%
+            pgCat1.setProgress(Math.min(total / 500.0, 1.0));
         }
     }
 
     private void cargarListaActividades(int userId) {
         List<Huella> historial = huellaService.obtenerHistorial(userId);
         vboxActividades.getChildren().clear();
-
-        // Mostramos las últimas 4 actividades de la base de datos
         int max = Math.min(historial.size(), 4);
         for (int i = 0; i < max; i++) {
             vboxActividades.getChildren().add(crearFilaActividad(historial.get(i)));
@@ -80,27 +71,12 @@ public class InicioViewController {
         HBox row = new HBox(15);
         row.getStyleClass().add("activity-item");
         row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-
-        // Icono dinámico según la actividad
         String nombreAct = (h.getIdActividad() != null) ? h.getIdActividad().getNombre() : "Actividad";
         Label icon = new Label(asignarIcono(nombreAct));
-
-        VBox texts = new VBox(2);
-        Label title = new Label(nombreAct);
-        title.setStyle("-fx-font-weight: bold;");
-
-        Label date = new Label(h.getFecha().toString());
-        date.setStyle("-fx-font-size: 10px; -fx-text-fill: #71717a;");
-        texts.getChildren().addAll(title, date);
-
+        VBox texts = new VBox(2, new Label(nombreAct), new Label(h.getFecha().toString()));
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        // Usamos los campos 'valor' y 'unidad' de tu tabla MySQL
-        Label valor = new Label(h.getValor() + " " + h.getUnidad());
-        valor.setStyle("-fx-font-weight: bold;");
-
-        row.getChildren().addAll(icon, texts, spacer, valor);
+        row.getChildren().addAll(icon, texts, spacer, new Label(h.getValor() + " " + h.getUnidad()));
         return row;
     }
 
@@ -111,36 +87,17 @@ public class InicioViewController {
         return "🌱";
     }
 
-    @FXML
-    private void handleLogout() {
+    @FXML private void handleLogout() { cambiarEscena("/view/login.fxml"); }
+    @FXML private void irAMisHuellas() { cambiarEscena("/view/mis_huellas.fxml"); }
+    @FXML private void irAHabitos() { cambiarEscena("/view/habitos.fxml"); }
+
+    private void cambiarEscena(String fxml) {
         try {
             Stage stage = (Stage) lblHuellaTotal.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Scene scene = new Scene(loader.load());
             scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
             stage.setScene(scene);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
-    private void irAMisHuellas() {
-        try {
-            // Obtenemos la ventana actual
-            Stage stage = (Stage) lblHuellaTotal.getScene().getWindow();
-
-            // Cargamos el FXML de Mis Huellas
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/mis_huellas.fxml"));
-            Scene scene = new Scene(loader.load());
-
-            // Aplicamos el CSS para que no pierda el diseño
-            scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
-
-            stage.setScene(scene);
-            stage.setTitle("EcoTrack - Mis Huellas");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { e.printStackTrace(); }
     }
 }
