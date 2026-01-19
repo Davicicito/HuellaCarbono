@@ -14,4 +14,11 @@ public class ActividadService {
     public List<Actividad> listarTodasLasActividades() {
         return actividadDAO.listarTodas();
     }
+
+    /**
+     * Recupera todas las actividades disponibles para el ComboBox.
+     */
+    public List<Actividad> obtenerTodas() {
+        return actividadDAO.listarTodas();
+    }
 }

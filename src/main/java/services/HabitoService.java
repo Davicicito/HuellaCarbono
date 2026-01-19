@@ -24,4 +24,17 @@ public class HabitoService {
     public List<Habito> misHabitos(int idUsuario) {
         return habitoDAO.listarPorUsuario(idUsuario);
     }
+
+    /**
+     * Guarda un nuevo hábito en la base de datos a través del DAO.
+     * Este es el método que tu controlador marca en rojo.
+     */
+    public boolean guardar(Habito h) {
+        // Llamamos al método insertar del DAO que ahora devuelve boolean
+        return habitoDAO.insertar(h);
+    }
+
+    public void eliminar(Habito h) {
+        habitoDAO.eliminar(h);
+    }
 }

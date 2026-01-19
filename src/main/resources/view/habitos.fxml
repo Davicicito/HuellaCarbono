@@ -18,10 +18,10 @@
                     </children>
                 </HBox>
                 <Separator prefHeight="30.0" />
-                <Button maxWidth="Infinity" text="🏠 Dashboard" styleClass="sidebar-button" onAction="#irAInicio" />
+                <Button maxWidth="Infinity" text="🏠 Inicio" styleClass="sidebar-button" onAction="#irAInicio" />
                 <Button maxWidth="Infinity" text="👣 Mis Huellas" styleClass="sidebar-button" onAction="#irAMisHuellas" />
                 <Button maxWidth="Infinity" text="📅 Hábitos" styleClass="sidebar-button-active" />
-                <Button maxWidth="Infinity" text="📊 Análisis" styleClass="sidebar-button" />
+                <Button maxWidth="Infinity" text="📊 Análisis" styleClass="sidebar-button" onAction="#irAAnalisis" />
                 <Button maxWidth="Infinity" text="💡 Recomendaciones" styleClass="sidebar-button" />
                 <Region VBox.vgrow="ALWAYS" />
                 <Button maxWidth="Infinity" text="⚙️ Configuración" styleClass="sidebar-button" />
@@ -43,8 +43,7 @@
                                     <Label text="Rutinas para un estilo de vida sostenible" style="-fx-text-fill: gray;" />
                                 </VBox>
                                 <Region HBox.hgrow="ALWAYS" />
-                                <Button text="+ Nuevo Hábito" styleClass="button-new" />
-                            </children>
+                                <Button text="+ Nuevo Hábito" styleClass="button-new" onAction="#abrirFormularioNuevoHabito" />                            </children>
                         </HBox>
 
                         <HBox spacing="20.0">
@@ -54,7 +53,7 @@
                             </VBox>
                             <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
                                 <Label text="Impacto Estimado" styleClass="stat-label" />
-                                <Label text="Variable" styleClass="stat-value" />
+                                <Label fx:id="lblImpactoEstimado" text="0.0 kg" styleClass="stat-value" />
                             </VBox>
                         </HBox>
 

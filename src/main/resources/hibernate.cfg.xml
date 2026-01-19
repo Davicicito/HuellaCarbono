@@ -16,6 +16,8 @@
 
         <property name="hbm2ddl.auto">update</property>
 
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
+
         <mapping class="model.Usuario"/>
         <mapping class="model.Actividad"/>
         <mapping class="model.Categoria"/>

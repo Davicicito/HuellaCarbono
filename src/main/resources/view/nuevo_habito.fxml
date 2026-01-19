@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="15.0" prefWidth="420.0" style="-fx-background-color: white; -fx-background-radius: 25;" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.NuevoHabitoController">
+    <padding><Insets top="25.0" left="25.0" right="25.0" bottom="25.0" /></padding>
+    <children>
+        <Label text="Nuevo Hábito Ambiental" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1b4332;" />
+
+        <VBox spacing="8.0">
+            <Label text="Actividad" styleClass="input-label" />
+            <ComboBox fx:id="comboActividades" maxWidth="Infinity" promptText="Seleccionar actividad" styleClass="filter-combo" />
+        </VBox>
+
+        <HBox spacing="15.0">
+            <children>
+                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                    <Label text="Frecuencia" styleClass="input-label" />
+                    <TextField fx:id="txtFrecuencia" promptText="Ej: 5" styleClass="text-field-custom" />
+                </VBox>
+                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                    <Label text="Tipo" styleClass="input-label" />
+                    <ComboBox fx:id="comboTipo" maxWidth="Infinity" promptText="Semanal" styleClass="filter-combo" />
+                </VBox>
+            </children>
+        </HBox>
+
+        <VBox style="-fx-background-color: #f0fdf4; -fx-background-radius: 15; -fx-padding: 15;">
+            <children>
+                <Label text="Ejemplo: Si quieres usar el transporte público 5 veces por semana, selecciona '5' en frecuencia y 'semanal' en tipo."
+                       wrapText="true" style="-fx-text-fill: #166534; -fx-font-size: 11px; -fx-line-spacing: 2;" />
+            </children>
+        </VBox>
+
+        <HBox spacing="15.0" alignment="CENTER">
+            <padding><Insets top="10.0" /></padding>
+            <Button onAction="#cerrar" text="Cancelar" prefWidth="150.0"
+                    style="-fx-background-color: white; -fx-border-color: #e5e7eb; -fx-border-radius: 20; -fx-background-radius: 20; -fx-text-fill: #374151; -fx-cursor: hand;" />
+            <Button onAction="#guardar" text="Crear Hábito" prefWidth="150.0"
+                    style="-fx-background-color: #059669; -fx-background-radius: 20; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;" />
+        </HBox>
+    </children>
+</VBox>

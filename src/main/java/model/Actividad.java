@@ -41,4 +41,9 @@ public class Actividad {
         this.idCategoria = idCategoria;
     }
 
+    @Override
+    public String toString() {
+        return this.nombre; // Devuelve el nombre de la actividad para que el ComboBox lo use
+    }
+
 }

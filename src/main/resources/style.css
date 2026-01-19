@@ -168,3 +168,21 @@
     -fx-cursor: hand;
 }
 .btn-adoptar:hover { -fx-background-color: #d1fae5; }
+/* Estilo para las ventanas de Alerta */
+.dialog-pane {
+    -fx-background-color: white;
+    -fx-border-radius: 15;
+    -fx-background-radius: 15;
+}
+
+.dialog-pane .button {
+    -fx-background-color: #10b981;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.dialog-pane .label {
+    -fx-text-fill: #1b4332;
+    -fx-font-weight: bold;
+}

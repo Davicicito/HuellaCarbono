@@ -90,6 +90,10 @@ public class InicioViewController {
     @FXML private void handleLogout() { cambiarEscena("/view/login.fxml"); }
     @FXML private void irAMisHuellas() { cambiarEscena("/view/mis_huellas.fxml"); }
     @FXML private void irAHabitos() { cambiarEscena("/view/habitos.fxml"); }
+    @FXML
+    private void irAAnalisis() {
+        cambiarEscena("/view/analisis.fxml");
+    }
 
     private void cambiarEscena(String fxml) {
         try {

@@ -18,10 +18,10 @@
                     </children>
                 </HBox>
                 <Separator prefHeight="30.0" />
-                <Button maxWidth="Infinity" text="🏠 Dashboard" styleClass="sidebar-button" onAction="#irAInicio" />
+                <Button maxWidth="Infinity" text="🏠 Inicio" styleClass="sidebar-button" onAction="#irAInicio" />
                 <Button maxWidth="Infinity" text="👣 Mis Huellas" styleClass="sidebar-button-active" />
                 <Button maxWidth="Infinity" text="📅 Hábitos" styleClass="sidebar-button" onAction="#irAHabitos" />
-                <Button maxWidth="Infinity" text="📊 Análisis" styleClass="sidebar-button" />
+                <Button maxWidth="Infinity" text="📊 Análisis" styleClass="sidebar-button" onAction="#irAAnalisis" />
                 <Button maxWidth="Infinity" text="💡 Recomendaciones" styleClass="sidebar-button" />
                 <Region VBox.vgrow="ALWAYS" />
                 <Button maxWidth="Infinity" text="⚙️ Configuración" styleClass="sidebar-button" />

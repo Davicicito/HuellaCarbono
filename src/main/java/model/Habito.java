@@ -10,6 +10,10 @@ public class Habito {
     @EmbeddedId
     private HabitoId id;
 
+    public Habito() {
+        this.id = new HabitoId();
+    }
+
     @MapsId("idUsuario")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_usuario", nullable = false)
