@@ -1,6 +1,5 @@
 package controller;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,8 +11,10 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Huella;
+import model.Habito;
 import model.Usuario;
 import services.HuellaService;
+import services.HabitoService;
 import utils.Sesion;
 import java.util.List;
 import java.util.Map;
@@ -21,16 +22,17 @@ import java.util.Map;
 public class InicioViewController {
 
     @FXML private Label lblHuellaTotal;
-    @FXML private Label lblNumActividades; // RESTAURADO
+    @FXML private Label lblNumActividades;
     @FXML private Label lblPromedio;
     @FXML private Label lblVariacionHuella;
+    @FXML private Label lblHabitosActivos; // Nuevo: Conectado al FXML
     @FXML private VBox vboxActividades;
 
-    @FXML private Label lblCat1Nombre;
     @FXML private Label lblCat1Valor;
     @FXML private ProgressBar pgCat1;
 
     private final HuellaService huellaService = new HuellaService();
+    private final HabitoService habitoService = new HabitoService(); // Nuevo Service
 
     @FXML
     public void initialize() {
@@ -38,6 +40,7 @@ public class InicioViewController {
         if (usuarioActual != null) {
             cargarEstadisticas(usuarioActual.getId().longValue());
             cargarListaActividades(usuarioActual.getId());
+            cargarHabitosResumen(usuarioActual.getId()); // Nueva llamada
         }
     }
 
@@ -58,6 +61,14 @@ public class InicioViewController {
         }
     }
 
+    private void cargarHabitosResumen(int userId) {
+        // Obtenemos la lista de hábitos y ponemos el tamaño en el label
+        List<Habito> habitos = habitoService.obtenerHabitosPorUsuario(userId);
+        if (lblHabitosActivos != null) {
+            lblHabitosActivos.setText(String.valueOf(habitos.size()));
+        }
+    }
+
     private void cargarListaActividades(int userId) {
         List<Huella> historial = huellaService.obtenerHistorial(userId);
         vboxActividades.getChildren().clear();
@@ -71,11 +82,18 @@ public class InicioViewController {
         HBox row = new HBox(15);
         row.getStyleClass().add("activity-item");
         row.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
         String nombreAct = (h.getIdActividad() != null) ? h.getIdActividad().getNombre() : "Actividad";
         Label icon = new Label(asignarIcono(nombreAct));
-        VBox texts = new VBox(2, new Label(nombreAct), new Label(h.getFecha().toString()));
+
+        VBox texts = new VBox(2,
+                new Label(nombreAct),
+                new Label(h.getFecha().toString())
+        );
+
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
+
         row.getChildren().addAll(icon, texts, spacer, new Label(h.getValor() + " " + h.getUnidad()));
         return row;
     }
@@ -90,10 +108,8 @@ public class InicioViewController {
     @FXML private void handleLogout() { cambiarEscena("/view/login.fxml"); }
     @FXML private void irAMisHuellas() { cambiarEscena("/view/mis_huellas.fxml"); }
     @FXML private void irAHabitos() { cambiarEscena("/view/habitos.fxml"); }
-    @FXML
-    private void irAAnalisis() {
-        cambiarEscena("/view/analisis.fxml");
-    }
+    @FXML private void irAAnalisis() { cambiarEscena("/view/analisis.fxml"); }
+    @FXML private void irARecomendaciones() { cambiarEscena("/view/recomendaciones.fxml"); }
 
     private void cambiarEscena(String fxml) {
         try {

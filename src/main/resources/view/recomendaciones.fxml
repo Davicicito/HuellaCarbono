@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane prefHeight="720.0" prefWidth="1280.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.RecomendacionesViewController">
+    <left>
+        <VBox prefWidth="250.0" spacing="10.0" styleClass="sidebar">
+            <padding><Insets top="30.0" left="20.0" right="20.0" /></padding>
+            <children>
+                <HBox spacing="10.0" alignment="CENTER_LEFT">
+                    <children>
+                        <StackPane styleClass="icon-circle-green"><Label text="🍃" /></StackPane>
+                        <VBox>
+                            <Label text="EcoTrack" style="-fx-font-weight: bold; -fx-font-size: 16px;" />
+                            <Label text="Huella de Carbono" style="-fx-font-size: 10px; -fx-text-fill: gray;" />
+                        </VBox>
+                    </children>
+                </HBox>
+                <Separator prefHeight="30.0" />
+                <Button maxWidth="Infinity" text="🏠 Inicio" styleClass="sidebar-button" onAction="#irAInicio" />
+                <Button maxWidth="Infinity" text="👣 Mis Huellas" styleClass="sidebar-button" onAction="#irAMisHuellas" />
+                <Button maxWidth="Infinity" text="📅 Hábitos" styleClass="sidebar-button" onAction="#irAHabitos" />
+                <Button maxWidth="Infinity" text="📊 Análisis" styleClass="sidebar-button" onAction="#irAAnalisis" />
+                <Button maxWidth="Infinity" text="💡 Recomendaciones" styleClass="sidebar-button-active" />
+                <Region VBox.vgrow="ALWAYS" />
+                <Button maxWidth="Infinity" text="🚪 Cerrar sesión" styleClass="sidebar-button-exit" onAction="#handleLogout" />
+            </children>
+        </VBox>
+    </left>
+
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="edge-to-edge">
+            <content>
+                <VBox spacing="30.0" styleClass="main-content-area">
+                    <padding><Insets top="30.0" left="40.0" right="40.0" bottom="30.0" /></padding>
+                    <children>
+                        <VBox spacing="5.0" styleClass="header-container">
+                            <Label text="Recomendaciones" styleClass="main-title" />
+                            <Label text="Consejos personalizados para reducir tu huella" styleClass="subtitle" />
+                        </VBox>
+
+                        <FlowPane fx:id="flowRecomendaciones" hgap="20.0" vgap="20.0" />
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

@@ -186,3 +186,119 @@
     -fx-text-fill: #1b4332;
     -fx-font-weight: bold;
 }
+
+/* Colores para el gráfico de quesito (PieChart) */
+.default-color0.chart-pie { -fx-pie-color: #10b981; } /* Verde esmeralda */
+.default-color1.chart-pie { -fx-pie-color: #3b82f6; } /* Azul */
+.default-color2.chart-pie { -fx-pie-color: #f59e0b; } /* Ámbar */
+.default-color3.chart-pie { -fx-pie-color: #ef4444; } /* Rojo */
+
+/* Estilo para el gráfico de líneas */
+.chart-series-line {
+    -fx-stroke: #10b981;
+    -fx-stroke-width: 3px;
+}
+
+.chart-line-symbol {
+    -fx-background-color: #10b981, white;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+/* Tarjeta de Recomendación */
+.recommendation-card {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-padding: 20;
+    -fx-pref-width: 350;
+    -fx-pref-height: 150;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.recommendation-card:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(16, 185, 129, 0.2), 15, 0, 0, 6);
+    -fx-translate-y: -2;
+}
+
+/* Títulos e Iconos */
+.card-title-text {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2937;
+}
+
+.card-icon {
+    -fx-font-size: 22px;
+}
+
+/* Impacto */
+.card-impact-text {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #10b981; /* Verde eco */
+}
+
+/* Etiquetas (Tags) de Categoría */
+.tag-category {
+    -fx-padding: 3 10;
+    -fx-background-radius: 20;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+}
+
+/* Colores por Categoría */
+.tag-transporte {
+    -fx-background-color: #dbeafe;
+    -fx-text-fill: #1e40af;
+}
+
+.tag-energía {
+    -fx-background-color: #fef3c7;
+    -fx-text-fill: #92400e;
+}
+
+.tag-alimentación {
+    -fx-background-color: #dcfce7;
+    -fx-text-fill: #166534;
+}
+
+.tag-residuos {
+    -fx-background-color: #f3e8ff;
+    -fx-text-fill: #6b21a8;
+}
+
+/* Contenedor principal del centro */
+.main-content-area {
+    -fx-background-color: #f8f9fa;
+}
+
+/* Títulos del Header */
+.main-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2937;
+}
+
+.subtitle {
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 14px;
+}
+
+/* Estilos de la marca en el Sidebar */
+.sidebar-brand-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-text-fill: #1f2937;
+}
+
+.sidebar-brand-subtitle {
+    -fx-font-size: 10px;
+    -fx-text-fill: #9ca3af;
+}
+
+/* Espaciador dinámico */
+.spacer {
+    -fx-min-height: 10px;
+}

@@ -22,9 +22,8 @@
                 <Button maxWidth="Infinity" text="👣 Mis Huellas" styleClass="sidebar-button" onAction="#irAMisHuellas" />
                 <Button maxWidth="Infinity" text="📅 Hábitos" styleClass="sidebar-button-active" />
                 <Button maxWidth="Infinity" text="📊 Análisis" styleClass="sidebar-button" onAction="#irAAnalisis" />
-                <Button maxWidth="Infinity" text="💡 Recomendaciones" styleClass="sidebar-button" />
+                <Button maxWidth="Infinity" text="💡 Recomendaciones" styleClass="sidebar-button" onAction="#irARecomendaciones" />
                 <Region VBox.vgrow="ALWAYS" />
-                <Button maxWidth="Infinity" text="⚙️ Configuración" styleClass="sidebar-button" />
                 <Button maxWidth="Infinity" text="🚪 Cerrar sesión" styleClass="sidebar-button-exit" onAction="#handleLogout" />
             </children>
         </VBox>

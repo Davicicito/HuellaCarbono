@@ -171,6 +171,10 @@ public class MisHuellasController {
     private void irAAnalisis() {
         cambiarEscena("/view/analisis.fxml");
     }
+    @FXML
+    private void irARecomendaciones() {
+        cambiarEscena("/view/recomendaciones.fxml");
+    }
     @FXML private void handleLogout() { Sesion.getInstancia().setUsuario(null); cambiarEscena("/view/login.fxml"); }
 
     private void cambiarEscena(String fxml) {

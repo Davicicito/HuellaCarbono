@@ -37,4 +37,13 @@ public class HabitoService {
     public void eliminar(Habito h) {
         habitoDAO.eliminar(h);
     }
+
+    /**
+     * Obtiene la lista de hábitos de un usuario.
+     * Usamos el método listarPorUsuario del DAO que ya hace el JOIN FETCH.
+     */
+    public List<Habito> obtenerHabitosPorUsuario(int userId) {
+        // Llamamos al método que ya tienes en tu HabitoDAO
+        return habitoDAO.listarPorUsuario(userId);
+    }
 }

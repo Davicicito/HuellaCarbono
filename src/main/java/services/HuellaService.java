@@ -91,4 +91,9 @@ public class HuellaService {
     public double consultarImpactoTotal(int idUsuario) {
         return huellaDAO.obtenerImpactoTotal(idUsuario);
     }
+
+    public List<Huella> obtenerHuellasPorUsuario(int idUsuario) {
+        // Llama al único método que dejamos en el DAO
+        return huellaDAO.listarPorUsuario(idUsuario);
+    }
 }
