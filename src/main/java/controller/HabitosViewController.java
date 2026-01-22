@@ -16,6 +16,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Controlador para la gestión de hábitos sostenibles.
+ * Se encarga de mostrar los compromisos actuales del usuario, calcular el ahorro
+ * estimado de CO2 basado en la frecuencia de estos y sugerir nuevas acciones.
+ */
 public class HabitosViewController {
 
     @FXML private FlowPane flowHabitos;
@@ -25,18 +30,28 @@ public class HabitosViewController {
 
     private final HabitoService habitoService = new HabitoService();
 
+    /**
+     * Configuración inicial al cargar la vista.
+     * Recupera los hábitos existentes del usuario y genera el panel de sugerencias.
+     */
     @FXML
     public void initialize() {
         cargarHabitosUsuario();
         cargarSugerenciasManuales();
     }
 
+    /**
+     * Obtiene los hábitos del usuario desde la base de datos y actualiza la interfaz.
+     * Calcula dinámicamente el ahorro total proyectado y gestiona el estado visual
+     * de la lista, incluyendo mensajes cuando no hay datos.
+     */
     private void cargarHabitosUsuario() {
         if (Sesion.getInstancia().getUsuario() == null) return;
         int userId = Sesion.getInstancia().getUsuario().getId();
 
         List<Habito> habitos = habitoService.misHabitos(userId);
 
+        // Actualizamos la UI en el hilo de JavaFX para evitar problemas de sincronización
         Platform.runLater(() -> {
             if (lblTotalHabitos != null) {
                 lblTotalHabitos.setText(String.valueOf(habitos.size()));
@@ -46,7 +61,6 @@ public class HabitosViewController {
             if (flowHabitos != null) {
                 flowHabitos.getChildren().clear();
 
-                // CAMBIO 1: MENSAJE DE LISTA VACÍA
                 if (habitos.isEmpty()) {
                     Label lblVacio = new Label("Aún no tienes hábitos. ¡Define tu rutina sostenible! 🌱");
                     lblVacio.setStyle("-fx-text-fill: #9ca3af; -fx-font-style: italic; -fx-padding: 30;");
@@ -54,6 +68,7 @@ public class HabitosViewController {
                 } else {
                     for (Habito h : habitos) {
                         flowHabitos.getChildren().add(crearTarjetaPro(h));
+                        // Cálculo del impacto basado en frecuencia y factor de emisión de la categoría
                         if (h.getIdActividad() != null && h.getIdActividad().getIdCategoria() != null) {
                             ahorroTotal += h.getFrecuencia() * h.getIdActividad().getIdCategoria().getFactorEmision();
                         }
@@ -65,11 +80,16 @@ public class HabitosViewController {
                 lblImpactoEstimado.setText(String.format("%.1f kg CO₂", ahorroTotal));
             }
 
-            // Refrescamos sugerencias para actualizar los botones de "Activo"
             actualizarBotonesSugerencias(habitos);
         });
     }
 
+    /**
+     * Construye visualmente una tarjeta (Card) para representar un hábito.
+     * Incluye los controles para editar el hábito o eliminarlo tras confirmación.
+     * @param h El objeto hábito a renderizar.
+     * @return Un nodo VBox con el diseño y eventos configurados.
+     */
     private VBox crearTarjetaPro(Habito h) {
         VBox card = new VBox(10);
         card.getStyleClass().add("stat-card");
@@ -85,7 +105,6 @@ public class HabitosViewController {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        // CAMBIO 2: BOTÓN DE EDITAR
         Button btnEdit = new Button("✏️");
         btnEdit.setStyle("-fx-background-color: transparent; -fx-text-fill: #059669; -fx-cursor: hand; -fx-font-size: 14px;");
         btnEdit.setOnAction(e -> abrirFormularioEditar(h));
@@ -114,6 +133,10 @@ public class HabitosViewController {
         return card;
     }
 
+    /**
+     * Genera una lista de acciones recomendadas cargadas desde el sistema.
+     * Muestra actividades predefinidas que el usuario puede adoptar como nuevos hábitos.
+     */
     private void cargarSugerenciasManuales() {
         if (hboxSugerencias == null) return;
         hboxSugerencias.getChildren().clear();
@@ -121,7 +144,6 @@ public class HabitosViewController {
         ActividadService service = new ActividadService();
         List<model.Actividad> todas = service.obtenerTodas();
 
-        // Tomamos actividades representativas para sugerir
         todas.stream().limit(4).forEach(act -> {
             hboxSugerencias.getChildren().add(
                     crearTarjetaSugerencia(act.getNombre(), "Impacto positivo", "🌱", "bg-green")
@@ -129,7 +151,11 @@ public class HabitosViewController {
         });
     }
 
-    // CAMBIO 3: LÓGICA DE BLOQUEO DE SUGERENCIAS
+    /**
+     * Gestiona el estado de los botones de sugerencia.
+     * Deshabilita y marca como "Activo" aquellas sugerencias que el usuario ya tenga en su lista personal.
+     * @param habitosActivos Lista de hábitos actuales del usuario para realizar el cruce de datos.
+     */
     private void actualizarBotonesSugerencias(List<Habito> habitosActivos) {
         List<String> nombresActivos = habitosActivos.stream()
                 .map(h -> h.getIdActividad().getNombre().toLowerCase())
@@ -138,7 +164,6 @@ public class HabitosViewController {
         for (javafx.scene.Node node : hboxSugerencias.getChildren()) {
             if (node instanceof VBox) {
                 VBox card = (VBox) node;
-                // Buscamos el label del título dentro de la tarjeta
                 HBox header = (HBox) card.getChildren().get(0);
                 VBox textContent = (VBox) header.getChildren().get(1);
                 Label lblTitulo = (Label) textContent.getChildren().get(0);
@@ -157,6 +182,10 @@ public class HabitosViewController {
         }
     }
 
+    /**
+     * Crea el componente visual para una sugerencia de hábito.
+     * Define el comportamiento del botón para abrir el formulario preconfigurado con dicha actividad.
+     */
     private VBox crearTarjetaSugerencia(String titulo, String ahorro, String icono, String clase) {
         VBox card = new VBox(15);
         card.getStyleClass().add("recom-card");
@@ -191,17 +220,14 @@ public class HabitosViewController {
         return card;
     }
 
-    @FXML
-    private void abrirFormularioNuevoHabito() {
-        ejecutarAperturaFormulario(null, null);
-    }
-
-    private void abrirFormularioEditar(Habito h) {
-        ejecutarAperturaFormulario(null, h);
-    }
+    @FXML private void abrirFormularioNuevoHabito() { ejecutarAperturaFormulario(null, null); }
+    private void abrirFormularioEditar(Habito h) { ejecutarAperturaFormulario(null, h); }
 
     /**
-     * Lógica unificada para abrir el formulario (Crear o Editar)
+     * Centraliza la apertura de la ventana modal para creación o edición de hábitos.
+     * Carga el formulario secundario y le inyecta los datos necesarios según el contexto.
+     * @param act Actividad sugerida (opcional, para nuevos hábitos).
+     * @param habitoExistente Hábito a editar (opcional, para modo edición).
      */
     private void ejecutarAperturaFormulario(model.Actividad act, Habito habitoExistente) {
         try {
@@ -231,16 +257,11 @@ public class HabitosViewController {
         }
     }
 
+    // --- MÉTODOS DE NAVEGACIÓN ---
     @FXML private void irAInicio() { cambiarEscena("/view/inicio.fxml"); }
     @FXML private void irAMisHuellas() { cambiarEscena("/view/mis_huellas.fxml"); }
-    @FXML
-    private void irAAnalisis() {
-        cambiarEscena("/view/analisis.fxml");
-    }
-    @FXML
-    private void irARecomendaciones() {
-        cambiarEscena("/view/recomendaciones.fxml");
-    }
+    @FXML private void irAAnalisis() { cambiarEscena("/view/analisis.fxml"); }
+    @FXML private void irARecomendaciones() { cambiarEscena("/view/recomendaciones.fxml"); }
     @FXML private void handleLogout() {
         Sesion.getInstancia().setUsuario(null);
         cambiarEscena("/view/login.fxml");

@@ -1,304 +1,105 @@
-/* =========================================
-   ESTILO GLOBAL Y FORMULARIOS (Sincronizado)
-   ========================================= */
+/* Configuración base: Fuente y color de fondo lateral */
 .root { -fx-font-family: "Segoe UI", sans-serif; }
-
 .left-panel { -fx-background-color: #1b4332; }
 
-.title-label {
-    -fx-text-fill: white;
-    -fx-font-size: 32px;
-    -fx-font-weight: bold;
-}
+/* Textos de Login y Registro */
+.title-label { -fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: bold; }
+.description-text { -fx-text-fill: #d1fae5; -fx-font-size: 14px; }
+.form-title { -fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1b4332; }
+.input-label { -fx-font-weight: bold; -fx-text-fill: #4b5563; -fx-font-size: 13px; }
 
-.description-text {
-    -fx-text-fill: #d1fae5;
-    -fx-font-size: 14px;
-}
-
-.form-title {
-    -fx-font-size: 28px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #1b4332;
-}
-
-.input-label {
-    -fx-font-weight: bold;
-    -fx-text-fill: #4b5563;
-    -fx-font-size: 13px;
-}
-
-/* --- RECUADROS IZQUIERDA (CORRECCIÓN COLOR BLANCO) --- */
-.info-card {
-    -fx-background-color: rgba(255, 255, 255, 0.08);
-    -fx-background-radius: 15;
-    -fx-padding: 15;
-    -fx-min-width: 130;
-}
-
-/* Forzamos que todo lo que esté dentro de la tarjeta sea blanco */
-.info-card .label {
-    -fx-text-fill: white !important;
-}
-
+/* Tarjetas informativas de la izquierda (Login/Registro) */
+.info-card { -fx-background-color: rgba(255, 255, 255, 0.08); -fx-background-radius: 15; -fx-padding: 15; -fx-min-width: 130; }
+.info-card .label { -fx-text-fill: white !important; }
 .card-title { -fx-font-weight: bold; -fx-font-size: 13px; }
 .card-text { -fx-font-size: 11px; -fx-opacity: 0.9; }
 
-/* CAMPOS DE TEXTO */
-.text-field-custom {
-    -fx-background-color: #f9fafb;
-    -fx-border-color: #10b981;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
-    -fx-padding: 12;
-}
-.text-field-custom:focused {
-    -fx-border-width: 2;
-    -fx-background-color: white;
-}
-
-.button-primary {
-    -fx-background-color: #10b981;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-background-radius: 10;
-    -fx-padding: 12 0;
-    -fx-cursor: hand;
-}
+/* Estilo de inputs y botones principales */
+.text-field-custom { -fx-background-color: #f9fafb; -fx-border-color: #10b981; -fx-border-radius: 10; -fx-padding: 12; }
+.text-field-custom:focused { -fx-border-width: 2; -fx-background-color: white; }
+.button-primary { -fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10; -fx-padding: 12 0; -fx-cursor: hand; }
 .button-primary:hover { -fx-background-color: #059669; }
-
 .link-text { -fx-text-fill: #10b981; -fx-font-weight: bold; -fx-cursor: hand; }
 
-/* =========================================
-   SIDEBAR UNIFICADO (image_602e04) - SIN CAMBIOS
-   ========================================= */
+/* Diseño del menú lateral de navegación */
 .sidebar { -fx-background-color: white; -fx-border-color: #f0f0f0; -fx-border-width: 0 1 0 0; }
 .sidebar-button { -fx-background-color: transparent; -fx-text-fill: #555; -fx-padding: 10 15; -fx-cursor: hand; }
-.sidebar-button-active {
-    -fx-background-color: #059669;
-    -fx-text-fill: white;
-    -fx-background-radius: 10;
-}
+.sidebar-button-active { -fx-background-color: #059669; -fx-text-fill: white; -fx-background-radius: 10; }
 .sidebar-button-exit { -fx-text-fill: #ef4444; -fx-background-color: transparent; -fx-padding: 10 15; -fx-cursor: hand; }
 
-/* =========================================
-   DASHBOARD / INICIO - SIN CAMBIOS
-   ========================================= */
-.stat-card {
-    -fx-background-color: white;
-    -fx-background-radius: 12;
-    -fx-padding: 20;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);
-}
-
+/* Tarjetas de estadísticas del Inicio */
+.stat-card { -fx-background-color: white; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5); }
 .icon-circle-green  { -fx-background-color: #dcfce7; -fx-background-radius: 50; -fx-min-width: 45; -fx-min-height: 45; -fx-alignment: center; }
 .icon-circle-blue   { -fx-background-color: #e0f2fe; -fx-background-radius: 50; -fx-min-width: 45; -fx-min-height: 45; -fx-alignment: center; }
 .icon-circle-orange { -fx-background-color: #ffedd5; -fx-background-radius: 50; -fx-min-width: 45; -fx-min-height: 45; -fx-alignment: center; }
 .icon-circle-purple { -fx-background-color: #f3e8ff; -fx-background-radius: 50; -fx-min-width: 45; -fx-min-height: 45; -fx-alignment: center; }
-
 .badge-green { -fx-background-color: #dcfce7; -fx-text-fill: #059669; -fx-background-radius: 10; -fx-padding: 2 8; -fx-font-size: 11px; }
 .badge-red   { -fx-background-color: #fee2e2; -fx-text-fill: #dc2626; -fx-background-radius: 10; -fx-padding: 2 8; -fx-font-size: 11px; }
-
 .stat-label { -fx-text-fill: #71717a; -fx-font-size: 12px; }
 .stat-value { -fx-font-size: 24px; -fx-font-weight: bold; }
 .stat-sub   { -fx-text-fill: #a1a1aa; -fx-font-size: 11px; }
 
+/* Contenedores generales y barras de progreso */
 .content-box { -fx-background-color: white; -fx-background-radius: 15; -fx-padding: 25; }
 .eco-progress .bar { -fx-background-color: #059669; }
 .activity-item { -fx-background-color: #f0fdf4; -fx-padding: 10 15; -fx-background-radius: 10; }
 
-/* =========================================
-   ESTILOS PARA MIS HUELLAS - SIN CAMBIOS
-   ========================================= */
-.modern-table {
-    -fx-background-color: white;
-    -fx-background-radius: 12;
-    -fx-border-color: transparent;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.02), 10, 0, 0, 5);
-}
-.modern-table .column-header {
-    -fx-background-color: #f8f9fa;
-    -fx-border-color: transparent transparent #eee transparent;
-    -fx-padding: 12;
-}
+/* Diseño de tablas de datos */
+.modern-table { -fx-background-color: white; -fx-background-radius: 12; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.02), 10, 0, 0, 5); }
+.modern-table .column-header { -fx-background-color: #f8f9fa; -fx-padding: 12; }
 .modern-table .column-header .label { -fx-text-fill: #1b4332; -fx-font-weight: bold; }
 .modern-table .table-row-cell:odd { -fx-background-color: #fafafa; }
 
-.search-field {
-    -fx-background-color: white;
-    -fx-border-color: #e5e7eb;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-padding: 8 12;
-}
-.filter-combo {
-    -fx-background-color: white;
-    -fx-border-color: #e5e7eb;
-    -fx-border-radius: 8;
-    -fx-padding: 2;
-}
-.button-new {
-    -fx-background-color: #059669;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-background-radius: 8;
-    -fx-padding: 10 18;
-}
+/* Buscadores, combos y botones de acción */
+.search-field { -fx-background-color: white; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-padding: 8 12; }
+.filter-combo { -fx-background-color: white; -fx-border-color: #e5e7eb; -fx-border-radius: 8; -fx-padding: 2; }
+.button-new { -fx-background-color: #059669; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 18; }
 
-/* =========================================
-   ESTILOS PARA HÁBITOS - SIN CAMBIOS
-   ========================================= */
-.recom-card { -fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 3); }
-
+/* Tarjetas de hábitos y categorías */
+.recom-card { -fx-background-color: white; -fx-background-radius: 12; -fx-padding: 15; }
 .bg-purple { -fx-background-color: #f5f3ff; -fx-background-radius: 12; -fx-min-width: 50; -fx-min-height: 50; -fx-alignment: center; }
 .bg-rose   { -fx-background-color: #fff1f2; -fx-background-radius: 12; -fx-min-width: 50; -fx-min-height: 50; -fx-alignment: center; }
 .bg-blue   { -fx-background-color: #f0f9ff; -fx-background-radius: 12; -fx-min-width: 50; -fx-min-height: 50; -fx-alignment: center; }
 
+/* Etiquetas visuales por tipo de actividad */
 .category-badge { -fx-padding: 4 10; -fx-background-radius: 15; -fx-font-size: 11px; -fx-font-weight: bold; }
 .badge-transporte { -fx-background-color: #dcfce7; -fx-text-fill: #059669; }
 .badge-energia { -fx-background-color: #e0f2fe; -fx-text-fill: #0369a1; }
 .badge-alimentacion { -fx-background-color: #fef3c7; -fx-text-fill: #92400e; }
-
-.btn-adoptar {
-    -fx-background-color: #ecfdf5;
-    -fx-text-fill: #059669;
-    -fx-font-weight: bold;
-    -fx-background-radius: 8;
-    -fx-padding: 8;
-    -fx-cursor: hand;
-}
+.btn-adoptar { -fx-background-color: #ecfdf5; -fx-text-fill: #059669; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8; }
 .btn-adoptar:hover { -fx-background-color: #d1fae5; }
-/* Estilo para las ventanas de Alerta */
-.dialog-pane {
-    -fx-background-color: white;
-    -fx-border-radius: 15;
-    -fx-background-radius: 15;
-}
 
-.dialog-pane .button {
-    -fx-background-color: #10b981;
-    -fx-text-fill: white;
-    -fx-background-radius: 8;
-    -fx-cursor: hand;
-}
+/* Personalización de ventanas modales y alertas */
+.dialog-pane { -fx-background-color: white; -fx-background-radius: 15; }
+.dialog-pane .button { -fx-background-color: #10b981; -fx-text-fill: white; -fx-background-radius: 8; }
+.dialog-pane .label { -fx-text-fill: #1b4332; -fx-font-weight: bold; }
 
-.dialog-pane .label {
-    -fx-text-fill: #1b4332;
-    -fx-font-weight: bold;
-}
+/* Gráficos: PieChart y LineChart */
+.default-color0.chart-pie { -fx-pie-color: #10b981; }
+.default-color1.chart-pie { -fx-pie-color: #3b82f6; }
+.default-color2.chart-pie { -fx-pie-color: #f59e0b; }
+.default-color3.chart-pie { -fx-pie-color: #ef4444; }
+.chart-series-line { -fx-stroke: #10b981; -fx-stroke-width: 3px; }
+.chart-line-symbol { -fx-background-color: #10b981, white; -fx-background-radius: 5px; -fx-padding: 5px; }
 
-/* Colores para el gráfico de quesito (PieChart) */
-.default-color0.chart-pie { -fx-pie-color: #10b981; } /* Verde esmeralda */
-.default-color1.chart-pie { -fx-pie-color: #3b82f6; } /* Azul */
-.default-color2.chart-pie { -fx-pie-color: #f59e0b; } /* Ámbar */
-.default-color3.chart-pie { -fx-pie-color: #ef4444; } /* Rojo */
+/* Tarjetas de recomendaciones dinámicas */
+.recommendation-card { -fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20; -fx-pref-width: 350; -fx-pref-height: 150; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4); }
+.recommendation-card:hover { -fx-effect: dropshadow(three-pass-box, rgba(16, 185, 129, 0.2), 15, 0, 0, 6); -fx-translate-y: -2; }
+.card-title-text { -fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1f2937; }
+.card-icon { -fx-font-size: 22px; }
+.card-impact-text { -fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #10b981; }
 
-/* Estilo para el gráfico de líneas */
-.chart-series-line {
-    -fx-stroke: #10b981;
-    -fx-stroke-width: 3px;
-}
+/* Etiquetas de categoría para recomendaciones */
+.tag-category { -fx-padding: 3 10; -fx-background-radius: 20; -fx-font-size: 10px; -fx-font-weight: bold; }
+.tag-transporte { -fx-background-color: #dbeafe; -fx-text-fill: #1e40af; }
+.tag-energía { -fx-background-color: #fef3c7; -fx-text-fill: #92400e; }
+.tag-alimentación { -fx-background-color: #dcfce7; -fx-text-fill: #166534; }
+.tag-residuos { -fx-background-color: #f3e8ff; -fx-text-fill: #6b21a8; }
 
-.chart-line-symbol {
-    -fx-background-color: #10b981, white;
-    -fx-background-radius: 5px;
-    -fx-padding: 5px;
-}
-
-/* Tarjeta de Recomendación */
-.recommendation-card {
-    -fx-background-color: white;
-    -fx-background-radius: 15;
-    -fx-padding: 20;
-    -fx-pref-width: 350;
-    -fx-pref-height: 150;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);
-    -fx-cursor: hand;
-    -fx-transition: all 0.3s ease-in-out;
-}
-
-.recommendation-card:hover {
-    -fx-effect: dropshadow(three-pass-box, rgba(16, 185, 129, 0.2), 15, 0, 0, 6);
-    -fx-translate-y: -2;
-}
-
-/* Títulos e Iconos */
-.card-title-text {
-    -fx-font-size: 15px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #1f2937;
-}
-
-.card-icon {
-    -fx-font-size: 22px;
-}
-
-/* Impacto */
-.card-impact-text {
-    -fx-font-size: 13px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #10b981; /* Verde eco */
-}
-
-/* Etiquetas (Tags) de Categoría */
-.tag-category {
-    -fx-padding: 3 10;
-    -fx-background-radius: 20;
-    -fx-font-size: 10px;
-    -fx-font-weight: bold;
-}
-
-/* Colores por Categoría */
-.tag-transporte {
-    -fx-background-color: #dbeafe;
-    -fx-text-fill: #1e40af;
-}
-
-.tag-energía {
-    -fx-background-color: #fef3c7;
-    -fx-text-fill: #92400e;
-}
-
-.tag-alimentación {
-    -fx-background-color: #dcfce7;
-    -fx-text-fill: #166534;
-}
-
-.tag-residuos {
-    -fx-background-color: #f3e8ff;
-    -fx-text-fill: #6b21a8;
-}
-
-/* Contenedor principal del centro */
-.main-content-area {
-    -fx-background-color: #f8f9fa;
-}
-
-/* Títulos del Header */
-.main-title {
-    -fx-font-size: 28px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #1f2937;
-}
-
-.subtitle {
-    -fx-text-fill: #6b7280;
-    -fx-font-size: 14px;
-}
-
-/* Estilos de la marca en el Sidebar */
-.sidebar-brand-title {
-    -fx-font-weight: bold;
-    -fx-font-size: 16px;
-    -fx-text-fill: #1f2937;
-}
-
-.sidebar-brand-subtitle {
-    -fx-font-size: 10px;
-    -fx-text-fill: #9ca3af;
-}
-
-/* Espaciador dinámico */
-.spacer {
-    -fx-min-height: 10px;
-}
+/* Estructura general de encabezados y logos */
+.main-content-area { -fx-background-color: #f8f9fa; }
+.main-title { -fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1f2937; }
+.subtitle { -fx-text-fill: #6b7280; -fx-font-size: 14px; }
+.sidebar-brand-title { -fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #1f2937; }
+.sidebar-brand-subtitle { -fx-font-size: 10px; -fx-text-fill: #9ca3af; }
+.spacer { -fx-min-height: 10px; }

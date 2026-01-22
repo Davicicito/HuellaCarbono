@@ -22,6 +22,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Controlador de la vista "Mis Huellas".
+ * Gestiona el mantenimiento (CRUD) de los registros de impacto ambiental.
+ * Ofrece herramientas avanzadas de filtrado por texto y categoría, además de
+ * presentar la información en una tabla dinámica con estilos personalizados.
+ */
 public class MisHuellasController {
 
     @FXML private TableView<Huella> tablaHuellas;
@@ -38,9 +44,21 @@ public class MisHuellasController {
     private final HuellaService huellaService = new HuellaService();
     private final CategoriaService categoriaService = new CategoriaService();
 
+    /**
+     * Lista maestra que contiene todos los registros recuperados de la base de datos.
+     */
     private ObservableList<Huella> listaMaestra = FXCollections.observableArrayList();
+
+    /**
+     * Lista envolvente que permite filtrar los datos de la tabla sin perder la lista original.
+     */
     private FilteredList<Huella> listaFiltrada;
 
+    /**
+     * Inicializa los componentes de la vista.
+     * Configura el comportamiento de las columnas, rellena los filtros desplegables
+     * y lanza la carga inicial de datos desde el servicio.
+     */
     @FXML
     public void initialize() {
         configurarColumnas();
@@ -49,6 +67,11 @@ public class MisHuellasController {
         cargarDatos();
     }
 
+    /**
+     * Define el mapeo de datos para cada columna de la tabla.
+     * Implementa un renderizado personalizado para la columna de categorías,
+     * asignando estilos CSS (badges) según el tipo de actividad.
+     */
     private void configurarColumnas() {
         colActividad.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getIdActividad() != null ?
@@ -57,7 +80,7 @@ public class MisHuellasController {
         colValor.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getValor() + " " + cellData.getValue().getUnidad()));
 
-        // CATEGORÍAS CON DISEÑO DE BADGE (Colores dinámicos)
+        // Configuración de celdas personalizadas para la columna Categoría
         colCategoria.setCellFactory(column -> new TableCell<Huella, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -68,6 +91,7 @@ public class MisHuellasController {
                     Label label = new Label(item);
                     label.getStyleClass().add("category-badge");
                     String lower = item.toLowerCase();
+                    // Lógica visual para diferenciar categorías por colores
                     if (lower.contains("transporte")) label.getStyleClass().add("badge-transporte");
                     else if (lower.contains("energía") || lower.contains("energia")) label.getStyleClass().add("badge-energia");
                     else if (lower.contains("alimentación") || lower.contains("alimentacion")) label.getStyleClass().add("badge-alimentacion");
@@ -75,6 +99,7 @@ public class MisHuellasController {
                 }
             }
         });
+
         colCategoria.setCellValueFactory(cellData -> {
             if (cellData.getValue().getIdActividad() != null && cellData.getValue().getIdActividad().getIdCategoria() != null) {
                 return new SimpleStringProperty(cellData.getValue().getIdActividad().getIdCategoria().getNombre());
@@ -89,7 +114,7 @@ public class MisHuellasController {
                 new SimpleStringProperty(cellData.getValue().getValor() + " kg CO₂"));
         colImpacto.getStyleClass().add("impacto-bold");
 
-        // COLUMNA DE ACCIONES (Borrar registro)
+        // Inserción de botones de borrado dinámicos en cada fila
         colAcciones.setCellFactory(param -> new TableCell<>() {
             private final Button btnEliminar = new Button("🗑");
             {
@@ -107,6 +132,11 @@ public class MisHuellasController {
         });
     }
 
+    /**
+     * Lanza un cuadro de diálogo de confirmación antes de borrar un registro.
+     * Si el usuario acepta, se comunica con el servicio para eliminar el dato físicamente.
+     * @param h El objeto Huella seleccionado para eliminar.
+     */
     private void confirmarEliminacion(Huella h) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Eliminar Registro");
@@ -114,10 +144,14 @@ public class MisHuellasController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             huellaService.borrarRegistro(h);
-            cargarDatos();
+            cargarDatos(); // Refrescamos la tabla tras la eliminación
         }
     }
 
+    /**
+     * Rellena el ComboBox de categorías consultando la base de datos.
+     * Añade la opción por defecto "Todas las categorías" para permitir resetear el filtro.
+     */
     private void cargarComboCategorias() {
         comboCategorias.getItems().clear();
         comboCategorias.getItems().add("Todas las categorías");
@@ -128,6 +162,10 @@ public class MisHuellasController {
         comboCategorias.getSelectionModel().selectFirst();
     }
 
+    /**
+     * Establece los "listeners" para los campos de búsqueda y categoría.
+     * Permite que la tabla se actualice instantáneamente mientras el usuario escribe o selecciona.
+     */
     private void configurarFiltros() {
         listaFiltrada = new FilteredList<>(listaMaestra, p -> true);
         txtBuscar.textProperty().addListener((obs, old, nv) -> aplicarFiltros());
@@ -135,6 +173,11 @@ public class MisHuellasController {
         tablaHuellas.setItems(listaFiltrada);
     }
 
+    /**
+     * Lógica de filtrado combinada.
+     * Evalúa cada fila de la lista maestra comparándola con el texto de búsqueda
+     * y la categoría seleccionada actualmente.
+     */
     private void aplicarFiltros() {
         String texto = txtBuscar.getText().toLowerCase().trim();
         String cat = comboCategorias.getValue();
@@ -146,6 +189,11 @@ public class MisHuellasController {
         });
     }
 
+    /**
+     * Recupera el historial de huellas del usuario logueado.
+     * Utiliza Platform.runLater para asegurar que la actualización de la UI se
+     * ejecute en el hilo principal de JavaFX.
+     */
     private void cargarDatos() {
         Usuario u = Sesion.getInstancia().getUsuario();
         if (u != null) {
@@ -154,6 +202,10 @@ public class MisHuellasController {
         }
     }
 
+    /**
+     * Abre el formulario modal para registrar una nueva actividad.
+     * Tras cerrar el formulario, se recarga la tabla para reflejar los cambios.
+     */
     @FXML private void abrirFormularioNuevaHuella() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/nueva_huella.fxml"));
@@ -165,17 +217,20 @@ public class MisHuellasController {
         } catch (IOException e) { e.printStackTrace(); }
     }
 
+    // --- MÉTODOS DE NAVEGACIÓN ---
+
     @FXML private void irAInicio() { cambiarEscena("/view/inicio.fxml"); }
     @FXML private void irAHabitos() { cambiarEscena("/view/habitos.fxml"); }
-    @FXML
-    private void irAAnalisis() {
-        cambiarEscena("/view/analisis.fxml");
+    @FXML private void irAAnalisis() { cambiarEscena("/view/analisis.fxml"); }
+    @FXML private void irARecomendaciones() { cambiarEscena("/view/recomendaciones.fxml"); }
+
+    /**
+     * Invalida la sesión actual y redirige a la pantalla de Login.
+     */
+    @FXML private void handleLogout() {
+        Sesion.getInstancia().setUsuario(null);
+        cambiarEscena("/view/login.fxml");
     }
-    @FXML
-    private void irARecomendaciones() {
-        cambiarEscena("/view/recomendaciones.fxml");
-    }
-    @FXML private void handleLogout() { Sesion.getInstancia().setUsuario(null); cambiarEscena("/view/login.fxml"); }
 
     private void cambiarEscena(String fxml) {
         try {

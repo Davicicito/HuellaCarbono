@@ -4,8 +4,20 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * Clase principal de lanzamiento de la aplicación EcoTrack.
+ * Extiende de {@link Application} para inicializar el entorno gráfico de JavaFX,
+ * cargar la vista inicial de acceso (Login) y configurar las propiedades del
+ * escenario principal, como el estilo global y el dimensionamiento de la ventana.
+ */
 public class App extends Application {
 
+    /**
+     * Punto de entrada principal para la interfaz de usuario.
+     * Coordina la carga del archivo FXML inicial, vincula la hoja de estilos CSS
+     * y define el estado visual del escenario (Stage) antes de mostrarlo al usuario.
+     * * @param stage El escenario principal proporcionado por la plataforma JavaFX.
+     */
     @Override
     public void start(Stage stage) {
         try {

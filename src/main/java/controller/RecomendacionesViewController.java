@@ -10,18 +10,33 @@ import services.HuellaService;
 import utils.Sesion;
 import java.util.*;
 
+/**
+ * Controlador para la vista de Recomendaciones.
+ * A diferencia de otras vistas, esta genera su contenido de forma dinámica mediante
+ * programación (Componentes "on-the-fly"). Analiza un catálogo de consejos y los
+ * renderiza como tarjetas visuales interactivas en un contenedor flexible.
+ */
 public class RecomendacionesViewController {
 
     @FXML private FlowPane flowRecomendaciones;
 
+    /**
+     * Inicializa la vista disparando la generación de los componentes visuales.
+     */
     @FXML
     public void initialize() {
         generarRecomendaciones();
     }
 
+    /**
+     * Define y despliega el listado de consejos ambientales.
+     * Crea una colección de objetos internos de tipo Consejo y coordina su
+     * transformación en nodos visuales (VBox) que se añaden al panel principal.
+     */
     private void generarRecomendaciones() {
         flowRecomendaciones.getChildren().clear();
 
+        // Catálogo de consejos maestros para el usuario
         List<Consejo> todosLosConsejos = Arrays.asList(
                 new Consejo("Usa bicicleta o camina", "Transporte", "-30 kg CO₂", "🚲"),
                 new Consejo("Opta por transporte público", "Transporte", "-45 kg CO₂", "🚌"),
@@ -36,6 +51,13 @@ public class RecomendacionesViewController {
         }
     }
 
+    /**
+     * Construye programáticamente el árbol de nodos para una tarjeta de recomendación.
+     * Aplica clases de estilo CSS dinámicas según la categoría del consejo para
+     * lograr una tematización visual (colores por tipo de actividad).
+     * @param c El objeto de datos con la información del consejo.
+     * @return Un contenedor VBox maquetado y estilizado.
+     */
     private VBox crearTarjetaConsejo(Consejo c) {
         VBox card = new VBox(10);
         card.getStyleClass().add("recommendation-card");
@@ -56,6 +78,7 @@ public class RecomendacionesViewController {
 
         Label categoria = new Label(c.categoria.toUpperCase());
         categoria.getStyleClass().add("tag-category");
+        // Normalización del nombre de categoría para coincidir con las clases CSS
         categoria.getStyleClass().add("tag-" + c.categoria.toLowerCase().replace("í", "i"));
 
         Label impacto = new Label("Impacto estimado: " + c.impacto);
@@ -65,25 +88,31 @@ public class RecomendacionesViewController {
         return card;
     }
 
-    // --- MÉTODOS DE NAVEGACIÓN ---
+    // --- MÉTODOS DE NAVEGACIÓN Y GESTIÓN DE SESIÓN ---
 
     @FXML private void irAInicio() { cambiarEscena("/view/inicio.fxml"); }
     @FXML private void irAMisHuellas() { cambiarEscena("/view/mis_huellas.fxml"); }
     @FXML private void irAHabitos() { cambiarEscena("/view/habitos.fxml"); }
     @FXML private void irAAnalisis() { cambiarEscena("/view/analisis.fxml"); }
 
+    /**
+     * Finaliza la sesión del usuario actual y limpia el contexto de seguridad.
+     */
     @FXML
     private void handleLogout() {
         Sesion.getInstancia().setUsuario(null);
         cambiarEscena("/view/login.fxml");
     }
 
+    /**
+     * Ejecuta la transición entre vistas, asegurando la propagación de la hoja de estilos.
+     * @param fxml Destino de la navegación.
+     */
     private void cambiarEscena(String fxml) {
         try {
             Stage stage = (Stage) flowRecomendaciones.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Scene scene = new Scene(loader.load());
-            // Aplicamos el CSS global
             scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
             stage.setScene(scene);
         } catch (Exception e) {
@@ -91,6 +120,10 @@ public class RecomendacionesViewController {
         }
     }
 
+    /**
+     * Clase interna de apoyo para estructurar los datos de los consejos
+     * antes de su renderizado.
+     */
     private static class Consejo {
         String titulo, categoria, impacto, icono;
         Consejo(String t, String c, String i, String ic) {

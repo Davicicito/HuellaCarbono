@@ -12,6 +12,11 @@ import utils.Sesion;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Controlador para la gestión de hábitos (creación y edición).
+ * Esta clase actúa como un formulario dinámico que puede precargarse con datos
+ * de una sugerencia o con la información de un hábito ya existente para su modificación.
+ */
 public class NuevoHabitoController {
 
     @FXML private ComboBox<Actividad> comboActividades;
@@ -24,16 +29,21 @@ public class NuevoHabitoController {
     private Actividad actividadSugerida;
     private Habito habitoEnEdicion;
 
+    /**
+     * Inicializa el formulario configurando las opciones de frecuencia y
+     * cargando el catálogo de actividades disponibles.
+     * Si existe una actividad sugerida previamente, fuerza su selección en el desplegable.
+     */
     @FXML
     public void initialize() {
-        // 1. Cargamos los tipos de frecuencia
+        // Opciones estándar de periodicidad para el usuario
         comboTipo.getItems().setAll("Semanal", "Mensual", "Diario");
 
-        // 2. Cargamos todas las actividades de la BD
+        // Carga del catálogo completo de actividades desde la base de datos
         List<Actividad> listaActividades = actividadService.obtenerTodas();
         comboActividades.getItems().setAll(listaActividades);
 
-        // 3. Sincronización de selección inicial
+        // Sincronización visual: asegura que el combo muestre la actividad que motivó la apertura
         if (actividadSugerida != null) {
             Platform.runLater(() -> {
                 for (Actividad a : comboActividades.getItems()) {
@@ -48,13 +58,15 @@ public class NuevoHabitoController {
     }
 
     /**
-     * Configura el formulario para editar un hábito existente
+     * Prepara el controlador para trabajar en modo edición.
+     * Almacena el objeto hábito original y rellena los campos de texto y
+     * desplegables con sus valores actuales.
+     * @param h El objeto {@link Habito} que se desea modificar.
      */
     public void prepararEdicion(Habito h) {
         this.habitoEnEdicion = h;
         this.actividadSugerida = h.getIdActividad();
 
-        // Rellenamos los campos con los datos actuales del hábito
         Platform.runLater(() -> {
             if (txtFrecuencia != null) {
                 txtFrecuencia.setText(String.valueOf(h.getFrecuencia()));
@@ -66,7 +78,9 @@ public class NuevoHabitoController {
     }
 
     /**
-     * Recibe una actividad para pre-cargar el formulario (desde sugerencias)
+     * Define la actividad inicial del formulario antes de que se muestre la vista.
+     * Se utiliza habitualmente cuando el usuario pulsa en una sugerencia de hábito.
+     * @param actividad La actividad que se quiere preseleccionar.
      */
     public void setActividadInicial(Actividad actividad) {
         this.actividadSugerida = actividad;
@@ -82,30 +96,36 @@ public class NuevoHabitoController {
         }
     }
 
+    /**
+     * Valida y procesa la persistencia del hábito.
+     * Si existe un hábito en edición, actualiza sus valores; de lo contrario,
+     * crea una nueva instancia vinculada al usuario actual y a la actividad elegida.
+     * Realiza conversiones de tipos y gestiona posibles errores de formato numérico.
+     */
     @FXML
     private void guardar() {
-        // Validación básica de campos
+        // Verificación de integridad: todos los datos son obligatorios
         if (comboActividades.getValue() == null || comboTipo.getValue() == null || txtFrecuencia.getText().trim().isEmpty()) {
             mostrarAlerta("Campos incompletos", "Por favor, rellena todos los campos.");
             return;
         }
 
         try {
-            // SI estamos editando, usamos el objeto existente. SI NO, creamos uno nuevo.
+            // Lógica de reutilización: editar objeto existente o instanciar uno nuevo
             Habito h = (habitoEnEdicion != null) ? habitoEnEdicion : new Habito();
 
-            // Sincronizamos la clave primaria compuesta (HabitoId)
+            // Sincronización de la clave primaria compuesta necesaria para Hibernate
             h.getId().setIdUsuario(Sesion.getInstancia().getUsuario().getId());
             h.getId().setIdActividad(comboActividades.getValue().getId());
 
-            // Rellenamos los datos del objeto
+            // Actualización de propiedades del modelo
             h.setIdUsuario(Sesion.getInstancia().getUsuario());
             h.setIdActividad(comboActividades.getValue());
             h.setFrecuencia(Integer.parseInt(txtFrecuencia.getText().trim()));
             h.setTipo(comboTipo.getValue());
             h.setUltimaFecha(LocalDate.now());
 
-            // El service llamará al DAO (usando merge) para persistir los cambios
+            // Delegación de la persistencia (merge) a la capa de servicio
             if (habitoService.guardar(h)) {
                 System.out.println("Hábito procesado con éxito.");
                 cerrar();
@@ -120,6 +140,11 @@ public class NuevoHabitoController {
         }
     }
 
+    /**
+     * Muestra una ventana emergente de información al usuario.
+     * @param titulo Texto del título de la alerta.
+     * @param mensaje Contenido detallado del aviso.
+     */
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);
@@ -128,6 +153,9 @@ public class NuevoHabitoController {
         alert.showAndWait();
     }
 
+    /**
+     * Obtiene la referencia de la ventana actual y solicita su cierre.
+     */
     @FXML
     private void cerrar() {
         Stage stage = (Stage) txtFrecuencia.getScene().getWindow();
