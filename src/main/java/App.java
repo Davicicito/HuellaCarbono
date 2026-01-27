@@ -27,6 +27,8 @@ public class App extends Application {
             Scene scene = new Scene(root);
             scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
 
+            stage.getIcons().add(new javafx.scene.image.Image(getClass().getResourceAsStream("/ecotrack.png")));
+
             stage.setTitle("EcoTrack - Huella de Carbono");
             stage.setScene(scene);
 

@@ -5,96 +5,93 @@ import model.Huella;
 import org.hibernate.Session;
 import utils.HibernateUtil;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
- * Servicio central para la gestión de la huella de carbono.
- * Proporciona la lógica de negocio para registrar, eliminar y consultar el impacto
- * ambiental de los usuarios. Incluye métodos avanzados de agregación para generar
- * las estadísticas y métricas que se visualizan en el Dashboard principal.
+ * Servicio encargado de la lógica de negocio para la gestión de huellas de carbono.
+ * Proporciona métodos para el registro, eliminación y cálculo avanzado de métricas
+ * de impacto ambiental, centralizando las consultas HQL para el análisis de datos.
  */
 public class HuellaService {
 
-    /**
-     * Acceso a la persistencia especializada en registros de huella.
-     */
+    // --- CONSULTAS HQL ---
+
+    private static final String QUERY_HISTORIAL =
+            "SELECT h FROM Huella h " +
+                    "JOIN FETCH h.idActividad a " +
+                    "JOIN FETCH a.idCategoria " +
+                    "WHERE h.idUsuario.id = :id " +
+                    "ORDER BY h.fecha DESC";
+
+    private static final String QUERY_SUM_IMPACTO =
+            "SELECT SUM(h.valor * h.idActividad.idCategoria.factorEmision) " +
+                    "FROM Huella h WHERE h.idUsuario.id = :id";
+
+    private static final String QUERY_COUNT_ACTIVIDADES =
+            "SELECT COUNT(h) FROM Huella h WHERE h.idUsuario.id = :id";
+
     private final HuellaDAO huellaDAO;
 
-    /**
-     * Constructor que inicializa el servicio de huellas.
-     */
     public HuellaService() {
         this.huellaDAO = new HuellaDAO();
     }
 
     /**
-     * Registra una nueva entrada de actividad ambiental en el sistema.
-     * @param h Objeto {@link Huella} que contiene el valor, unidad y actividad realizada.
+     * Registra una nueva actividad en el sistema delegando la persistencia al DAO.
+     * @param h Instancia de Huella con los datos de consumo.
      */
     public void registrarNuevaHuella(Huella h) {
         huellaDAO.guardar(h);
     }
 
     /**
-     * Obtiene el historial cronológico de huellas de un usuario.
-     * Utiliza una consulta HQL con JOIN FETCH para cargar en una única operación
-     * la actividad y su categoría asociada, optimizando el rendimiento de la UI.
-     * @param idUsuario Identificador del usuario logueado.
-     * @return Lista de huellas ordenadas de más reciente a más antigua.
+     * Recupera el historial de huellas del usuario.
+     * Utiliza JOIN FETCH para obtener la actividad y categoría en una sola consulta,
+     * evitando problemas de carga perezosa (Lazy Initialization) en la interfaz.
+     * @param idUsuario Identificador del usuario.
+     * @return Lista de huellas ordenadas por fecha de forma descendente.
      */
     public List<Huella> obtenerHistorial(int idUsuario) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return session.createQuery(
-                            "SELECT h FROM Huella h " +
-                                    "JOIN FETCH h.idActividad a " +
-                                    "JOIN FETCH a.idCategoria " +
-                                    "WHERE h.idUsuario.id = :id " +
-                                    "ORDER BY h.fecha DESC", Huella.class)
+            return session.createQuery(QUERY_HISTORIAL, Huella.class)
                     .setParameter("id", idUsuario)
                     .list();
         } catch (Exception e) {
-            System.err.println("Error al recuperar historial de huellas: " + e.getMessage());
             e.printStackTrace();
             return java.util.Collections.emptyList();
         }
     }
 
     /**
-     * Elimina un registro de huella específico de la base de datos.
-     * @param h Instancia de la entidad a borrar.
+     * Elimina un registro de huella de la base de datos.
+     * @param h Entidad Huella a eliminar.
      */
     public void borrarRegistro(Huella h) {
         huellaDAO.eliminar(h);
     }
 
     /**
-     * Genera las métricas clave para el panel de control (Dashboard).
-     * Realiza cálculos de agregación (SUM y COUNT) directamente en el motor de
-     * persistencia para obtener el impacto total de CO2 y el volumen de actividades.
-     * @param usuarioId ID del usuario para el que se calculan las estadísticas.
-     * @return Un {@link Map} que contiene los pares "total" (impacto) y "conteo" (nº registros).
+     * Calcula las estadísticas principales para el inicio.
+     * Obtiene el impacto total multiplicado por los factores de emisión y el
+     * recuento total de actividades registradas por el usuario.
+     * @param usuarioId Identificador del usuario.
+     * @return Mapa con el impacto acumulado ("total") y el número de registros ("conteo").
      */
     public Map<String, Double> obtenerEstadisticas(long usuarioId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Map<String, Double> stats = new HashMap<>();
 
-            // CAMBIO: Usamos la consulta que multiplica el valor por el factor de emisión
-            // Esta es la misma lógica que tienes en SUMA_IMPACTO_TOTAL de tu DAO
-            String hqlTotal = "SELECT SUM(h.valor * h.idActividad.idCategoria.factorEmision) " +
-                    "FROM Huella h WHERE h.idUsuario.id = :id";
-
-            Double totalImpacto = session.createQuery(hqlTotal, Double.class)
+            // Cálculo del impacto total (Valor * Factor de Emisión)
+            Double totalImpacto = session.createQuery(QUERY_SUM_IMPACTO, Double.class)
                     .setParameter("id", (int)usuarioId)
                     .getSingleResult();
 
             stats.put("total", totalImpacto != null ? totalImpacto : 0.0);
 
-            // Conteo de registros (este se queda igual)
-            Long actividades = session.createQuery(
-                            "SELECT COUNT(h) FROM Huella h WHERE h.idUsuario.id = :id", Long.class)
+            // Recuento de actividades
+            Long actividades = session.createQuery(QUERY_COUNT_ACTIVIDADES, Long.class)
                     .setParameter("id", (int)usuarioId)
                     .getSingleResult();
 
@@ -111,20 +108,18 @@ public class HuellaService {
     }
 
     /**
-     * Consulta simplificada del impacto total acumulado.
-     * Delega en el DAO la ejecución de la consulta HQL específica.
+     * Consulta el impacto total acumulado utilizando la lógica aritmética del DAO.
      * @param idUsuario Identificador del usuario.
-     * @return Valor numérico del impacto total en CO2.
+     * @return Suma total del impacto en kg de CO2.
      */
     public double consultarImpactoTotal(int idUsuario) {
         return huellaDAO.obtenerImpactoTotal(idUsuario);
     }
 
     /**
-     * Recupera el listado de huellas utilizando la lógica optimizada del DAO.
-     * Ideal para visualizaciones masivas de datos como tablas o listados de análisis.
-     * @param idUsuario ID del usuario.
-     * @return Lista de entidades {@link Huella}.
+     * Obtiene la lista de huellas del usuario mediante la consulta optimizada del DAO.
+     * @param idUsuario Identificador del usuario.
+     * @return Lista de entidades Huella.
      */
     public List<Huella> obtenerHuellasPorUsuario(int idUsuario) {
         return huellaDAO.listarPorUsuario(idUsuario);

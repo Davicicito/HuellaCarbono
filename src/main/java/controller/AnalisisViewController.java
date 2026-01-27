@@ -26,9 +26,9 @@ import java.nio.charset.StandardCharsets;
 import javafx.stage.FileChooser;
 
 /**
- * Controlador de la vista de Análisis.
- * Se encarga de transformar los datos brutos de la base de datos en información visual
- * mediante gráficos estadísticos y resúmenes numéricos del impacto ambiental.
+ * Este es el cerebro de la pantalla de Análisis.
+ * Su trabajo es coger todos esos datos "feos" de la base de datos y convertirlos en
+ * gráficos y numeritos que el usuario pueda entender fácilmente para ver cuánto contamina.
  */
 public class AnalisisViewController {
 
@@ -46,6 +46,11 @@ public class AnalisisViewController {
     private final HuellaService huellaService = new HuellaService();
     private final HabitoService habitoService = new HabitoService();
 
+    /**
+     * Este método se ejecuta automáticamente al abrir la pantalla.
+     * Primero mira si hay alguien logueado (por seguridad) y luego dispara
+     * toda la carga de datos para que los gráficos aparezcan llenos.
+     */
     @FXML
     public void initialize() {
         if (Sesion.getInstancia().getUsuario() == null) return;
@@ -57,19 +62,20 @@ public class AnalisisViewController {
     }
 
     /**
-     * Calcula y muestra las métricas generales.
-     * CAMBIO: Ahora obtiene el impacto total (CO2) multiplicado por los factores de emisión.
+     * Rellena las tarjetas de arriba con el impacto total de CO2.
+     * No solo suma los números, sino que pide al servicio que haga la multiplicación
+     * por el factor de emisión para que el dato sea real y científico.
      */
     private void cargarDatosResumen() {
         int userId = Sesion.getInstancia().getUsuario().getId();
 
-        // Obtenemos el impacto total real (HQL SUM con multiplicación)
+        // Le pedimos al servicio el total calculado directamente desde la BBDD
         double totalImpacto = huellaService.consultarImpactoTotal(userId);
         lblTotal.setText(String.format("%.1f kg CO₂", totalImpacto));
 
         List<Huella> huellas = huellaService.obtenerHuellasPorUsuario(userId);
 
-        // El promedio ahora se basa en el impacto real de CO2
+        // Sacamos la media de cuánto contamina cada acción que hace el usuario
         double promedio = huellas.isEmpty() ? 0 : totalImpacto / huellas.size();
         lblPromedio.setText(String.format("%.1f kg", promedio));
 
@@ -77,13 +83,15 @@ public class AnalisisViewController {
     }
 
     /**
-     * Genera el gráfico circular (PieChart) de distribución por categoría.
-     * CAMBIO: Suma el impacto real (valor * factor) para cada categoría.
+     * Crea el "gráfico de quesito".
+     * Agrupa todas las huellas por su categoría (Transporte, Energía...) y suma
+     * el impacto real para que veamos de un vistazo qué es lo que más nos hace contaminar.
      */
     private void cargarGraficoCategorias() {
         int userId = Sesion.getInstancia().getUsuario().getId();
         List<Huella> huellas = huellaService.obtenerHuellasPorUsuario(userId);
 
+        // Usamos streams para agrupar y multiplicar valor por factor de emisión sobre la marcha
         Map<String, Double> porCategoria = huellas.stream()
                 .collect(Collectors.groupingBy(
                         h -> h.getIdActividad().getIdCategoria().getNombre(),
@@ -97,8 +105,9 @@ public class AnalisisViewController {
     }
 
     /**
-     * Muestra la evolución temporal del impacto.
-     * CAMBIO: Los puntos del gráfico representan kg de CO₂ reales por mes.
+     * Dibuja la línea de tiempo para ver si el usuario está mejorando o no.
+     * Junta los datos por mes y año para que la gráfica no sea un lío y
+     * los ordena cronológicamente para que la línea tenga sentido.
      */
     private void cargarGraficoEvolucion() {
         int userId = Sesion.getInstancia().getUsuario().getId();
@@ -106,6 +115,7 @@ public class AnalisisViewController {
 
         if (huellas == null || huellas.isEmpty()) return;
 
+        // Agrupamos por mes/año y calculamos el CO2 total de cada mes
         Map<java.time.YearMonth, Double> porMesAño = huellas.stream()
                 .collect(Collectors.groupingBy(
                         h -> java.time.YearMonth.from(h.getFecha()),
@@ -114,6 +124,7 @@ public class AnalisisViewController {
 
         chartEvolucion.getData().clear();
 
+        // Limpiamos el eje X para que JavaFX no se queje al repintar
         if (chartEvolucion.getXAxis() instanceof CategoryAxis xAxis) {
             xAxis.setAnimated(false);
             xAxis.getCategories().clear();
@@ -122,6 +133,7 @@ public class AnalisisViewController {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("kg CO₂ por mes");
 
+        // Ordenamos los meses y les ponemos un nombre bonito (ej: ene. 2026)
         porMesAño.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .forEach(entry -> {
@@ -136,8 +148,9 @@ public class AnalisisViewController {
     }
 
     /**
-     * Identifica las 3 actividades con mayor impacto de CO2.
-     * CAMBIO: El ranking se basa en la contaminación real generada.
+     * Busca las 3 actividades que más han "castigado" al planeta.
+     * Ordena las actividades por su impacto total de CO2 y las muestra en una
+     * lista con un emoji de fuego para que el usuario sepa dónde tiene que recortar.
      */
     private void cargarTopActividades() {
         vboxTopActividades.getChildren().clear();
@@ -160,8 +173,9 @@ public class AnalisisViewController {
     }
 
     /**
-     * Exporta el historial a CSV.
-     * MEJORA: Incluye BOM UTF-8 para compatibilidad total con Excel y acentos.
+     * Exporta todo tu historial de contaminación a un archivo CSV.
+     * Le hemos metido un truco técnico (BOM UTF-8) para que al abrirlo en Excel
+     * los acentos y las eñes se vean perfectos y no como símbolos raros.
      */
     @FXML
     private void exportarCSV() {
@@ -178,7 +192,7 @@ public class AnalisisViewController {
             try (FileOutputStream fos = new FileOutputStream(file);
                  PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8))) {
 
-                // BOM para Excel (Acentos correctos)
+                // Escribimos la "firma" UTF-8 para que Excel entienda los acentos
                 fos.write(0xEF); fos.write(0xBB); fos.write(0xBF);
 
                 writer.println("Fecha,Actividad,Categoria,Valor,Unidad,Impacto_kgCO2");
@@ -205,17 +219,25 @@ public class AnalisisViewController {
         }
     }
 
+    // Métodos para moverse entre las pantallas del menú lateral
     @FXML private void irAInicio() { cambiarEscena("/view/inicio.fxml"); }
     @FXML private void irAMisHuellas() { cambiarEscena("/view/mis_huellas.fxml"); }
     @FXML private void irAHabitos() { cambiarEscena("/view/habitos.fxml"); }
     @FXML private void irARecomendaciones() { cambiarEscena("/view/recomendaciones.fxml"); }
 
+    /**
+     * Cierra la sesión borrando al usuario de la memoria y te manda de vuelta al Login.
+     */
     @FXML
     private void handleLogout() {
         Sesion.getInstancia().setUsuario(null);
         cambiarEscena("/view/login.fxml");
     }
 
+    /**
+     * Cambia la ventana actual por otra,
+     * asegurándose de cargar el CSS para que la nueva pantalla no se vea mal.
+     */
     private void cambiarEscena(String fxml) {
         try {
             Stage stage = (Stage) lblTotal.getScene().getWindow();

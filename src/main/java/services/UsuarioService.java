@@ -5,37 +5,36 @@ import model.Usuario;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
- * Servicio encargado de la gestión de usuarios y seguridad del sistema.
- * Centraliza los procesos de autenticación y registro de nuevos perfiles,
- * aplicando las reglas de negocio necesarias para garantizar la integridad
- * de las cuentas de usuario en EcoTrack.
+ * Este servicio es el "guardián" de la aplicación.
+ * Se encarga de todo lo que tenga que ver con los usuarios: desde crear cuentas nuevas
+ * hasta asegurar que nadie entre si no tiene la llave (contraseña) correcta.
  */
 public class UsuarioService {
 
     /**
-     * Acceso a la capa de persistencia para la gestión de usuarios.
+     * Nuestra conexión directa con la base de datos para temas de usuarios.
      */
     private final UsuarioDAO usuarioDAO;
 
     /**
-     * Constructor que inicializa el servicio y su correspondiente DAO.
+     * Al crear el servicio, preparamos su DAO para poder hablar con las tablas de MySQL.
      */
     public UsuarioService() {
         this.usuarioDAO = new UsuarioDAO();
     }
 
     /**
-     * Procesa la validación de credenciales para el acceso al sistema.
-     * Recupera el perfil mediante el email y realiza una comparación segura
-     * de la contraseña almacenada.
-     * * @param email Correo electrónico proporcionado por el usuario.
-     * @param password Contraseña introducida en el formulario de acceso.
-     * @return El objeto {@link Usuario} si la autenticación es exitosa;
-     * {@code null} si el usuario no existe o las credenciales son incorrectas.
+     * Gestiona el acceso al sistema.
+     * Busca al usuario por su email y utiliza la librería BCrypt para verificar
+     * si la contraseña introducida coincide con el hash de seguridad almacenado.
+     * * @param email Correo electrónico del usuario.
+     * @param password Contraseña en texto plano.
+     * @return El objeto Usuario si las credenciales son válidas; null en caso contrario.
      */
     public Usuario login(String email, String password) {
         Usuario usuario = usuarioDAO.buscarPorEmail(email);
-        // Comparamos la contraseña en texto plano con el hash de la BBDD
+
+        // Comprobación de seguridad: comparamos el texto con el hash cifrado
         if (usuario != null && BCrypt.checkpw(password, usuario.getContrasena())) {
             return usuario;
         }
@@ -43,18 +42,19 @@ public class UsuarioService {
     }
 
     /**
-     * Gestiona el registro de un nuevo usuario en la plataforma.
-     * Implementa la regla de negocio de "email único", verificando que la cuenta
-     * no exista previamente antes de proceder con el guardado en la base de datos.
-     * * @param nuevoUsuario Instancia con los datos del perfil a crear.
-     * @return {@code true} si el registro fue exitoso;
-     * {@code false} si el correo electrónico ya se encuentra registrado.
+     * Registra un nuevo perfil en la base de datos.
+     * Verifica que el email no esté duplicado y aplica un algoritmo de hashing
+     * a la contraseña antes de guardarla para cumplir con los estándares de seguridad.
+     * * @param nuevoUsuario Objeto con los datos del perfil a registrar.
+     * @return true si el registro fue exitoso; false si el email ya existe.
      */
     public boolean registrarUsuario(Usuario nuevoUsuario) {
         if (usuarioDAO.buscarPorEmail(nuevoUsuario.getEmail()) == null) {
-            // Ciframos la contraseña antes de guardar
+
+            // Generamos un hash seguro con sal aleatoria (salt) para la contraseña
             String hash = BCrypt.hashpw(nuevoUsuario.getContrasena(), BCrypt.gensalt());
             nuevoUsuario.setContrasena(hash);
+
             usuarioDAO.guardar(nuevoUsuario);
             return true;
         }
