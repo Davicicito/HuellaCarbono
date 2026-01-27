@@ -42,6 +42,7 @@
                         <VBox spacing="5.0">
                             <Label text="Análisis de Impacto Ambiental" style="-fx-font-size: 28px; -fx-font-weight: bold;" />
                             <Label text="Visualiza tu progreso y estadísticas de emisiones" style="-fx-text-fill: gray;" />
+                            <Button text="Exportar Datos (CSV)" onAction="#exportarCSV" styleClass="button-primary"/>
                         </VBox>
 
                         <GridPane hgap="20.0" vgap="10.0">

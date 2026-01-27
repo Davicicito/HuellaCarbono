@@ -2,6 +2,7 @@ package services;
 
 import DAO.UsuarioDAO;
 import model.Usuario;
+import org.mindrot.jbcrypt.BCrypt;
 
 /**
  * Servicio encargado de la gestión de usuarios y seguridad del sistema.
@@ -34,9 +35,8 @@ public class UsuarioService {
      */
     public Usuario login(String email, String password) {
         Usuario usuario = usuarioDAO.buscarPorEmail(email);
-
-        // Verificación de identidad: coincidencia exacta de credenciales
-        if (usuario != null && usuario.getContrasena().equals(password)) {
+        // Comparamos la contraseña en texto plano con el hash de la BBDD
+        if (usuario != null && BCrypt.checkpw(password, usuario.getContrasena())) {
             return usuario;
         }
         return null;
@@ -51,8 +51,10 @@ public class UsuarioService {
      * {@code false} si el correo electrónico ya se encuentra registrado.
      */
     public boolean registrarUsuario(Usuario nuevoUsuario) {
-        // Validación de unicidad: evitamos duplicados en la base de datos
         if (usuarioDAO.buscarPorEmail(nuevoUsuario.getEmail()) == null) {
+            // Ciframos la contraseña antes de guardar
+            String hash = BCrypt.hashpw(nuevoUsuario.getContrasena(), BCrypt.gensalt());
+            nuevoUsuario.setContrasena(hash);
             usuarioDAO.guardar(nuevoUsuario);
             return true;
         }

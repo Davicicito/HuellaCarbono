@@ -81,15 +81,18 @@ public class HuellaService {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Map<String, Double> stats = new HashMap<>();
 
-            // Cálculo del sumatorio total de emisiones registradas
-            Double total = session.createQuery(
-                            "SELECT SUM(h.valor) FROM Huella h WHERE h.idUsuario.id = :id", Double.class)
+            // CAMBIO: Usamos la consulta que multiplica el valor por el factor de emisión
+            // Esta es la misma lógica que tienes en SUMA_IMPACTO_TOTAL de tu DAO
+            String hqlTotal = "SELECT SUM(h.valor * h.idActividad.idCategoria.factorEmision) " +
+                    "FROM Huella h WHERE h.idUsuario.id = :id";
+
+            Double totalImpacto = session.createQuery(hqlTotal, Double.class)
                     .setParameter("id", (int)usuarioId)
                     .getSingleResult();
 
-            stats.put("total", total != null ? total.doubleValue() : 0.0);
+            stats.put("total", totalImpacto != null ? totalImpacto : 0.0);
 
-            // Conteo de la cantidad de registros realizados por el usuario
+            // Conteo de registros (este se queda igual)
             Long actividades = session.createQuery(
                             "SELECT COUNT(h) FROM Huella h WHERE h.idUsuario.id = :id", Long.class)
                     .setParameter("id", (int)usuarioId)
@@ -99,8 +102,7 @@ public class HuellaService {
 
             return stats;
         } catch (Exception e) {
-            // Gestión de errores: devolvemos valores neutros para evitar fallos en la vista
-            System.err.println("Fallo al calcular estadísticas de huella: " + e.getMessage());
+            e.printStackTrace();
             Map<String, Double> errorStats = new HashMap<>();
             errorStats.put("total", 0.0);
             errorStats.put("conteo", 0.0);

@@ -1,10 +1,12 @@
 package controller;
 
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.chart.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
@@ -16,6 +18,12 @@ import utils.Sesion;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.io.PrintWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import javafx.stage.FileChooser;
 
 /**
  * Controlador de la vista de Análisis.
@@ -24,19 +32,20 @@ import java.util.stream.Collectors;
  */
 public class AnalisisViewController {
 
-    @FXML private LineChart<String, Number> chartEvolucion;
-    @FXML private PieChart chartCategorias;
-    @FXML private Label lblTotal, lblTendencia, lblPromedio;
-    @FXML private VBox vboxTopActividades;
-    @FXML private ScrollPane scrollPrincipal;
+    @FXML
+    private LineChart<String, Number> chartEvolucion;
+    @FXML
+    private PieChart chartCategorias;
+    @FXML
+    private Label lblTotal, lblTendencia, lblPromedio;
+    @FXML
+    private VBox vboxTopActividades;
+    @FXML
+    private ScrollPane scrollPrincipal;
 
     private final HuellaService huellaService = new HuellaService();
     private final HabitoService habitoService = new HabitoService();
 
-    /**
-     * Inicializa la pantalla tras cargar el FXML.
-     * Verifica que haya un usuario en sesión y lanza la carga de todos los componentes visuales.
-     */
     @FXML
     public void initialize() {
         if (Sesion.getInstancia().getUsuario() == null) return;
@@ -48,29 +57,28 @@ public class AnalisisViewController {
     }
 
     /**
-     * Calcula y muestra las métricas generales en las tarjetas superiores.
-     * Obtiene el acumulado total de CO2 y el promedio por registro del usuario.
+     * Calcula y muestra las métricas generales.
+     * CAMBIO: Ahora obtiene el impacto total (CO2) multiplicado por los factores de emisión.
      */
     private void cargarDatosResumen() {
         int userId = Sesion.getInstancia().getUsuario().getId();
+
+        // Obtenemos el impacto total real (HQL SUM con multiplicación)
+        double totalImpacto = huellaService.consultarImpactoTotal(userId);
+        lblTotal.setText(String.format("%.1f kg CO₂", totalImpacto));
+
         List<Huella> huellas = huellaService.obtenerHuellasPorUsuario(userId);
 
-        // Sumamos todos los valores de las huellas registradas
-        double total = huellas.stream().mapToDouble(Huella::getValor).sum();
-        lblTotal.setText(String.format("%.1f kg", total));
-
-        // Calculamos la media aritmética simple
-        double promedio = huellas.isEmpty() ? 0 : total / huellas.size();
+        // El promedio ahora se basa en el impacto real de CO2
+        double promedio = huellas.isEmpty() ? 0 : totalImpacto / huellas.size();
         lblPromedio.setText(String.format("%.1f kg", promedio));
 
-        // Valor estático temporal para la tendencia
         lblTendencia.setText("-2.5%");
     }
 
     /**
      * Genera el gráfico circular (PieChart) de distribución por categoría.
-     * Agrupa los registros por el nombre de su categoría y suma sus valores
-     * para mostrar qué áreas (Transporte, Energía, etc.) pesan más en la huella.
+     * CAMBIO: Suma el impacto real (valor * factor) para cada categoría.
      */
     private void cargarGraficoCategorias() {
         int userId = Sesion.getInstancia().getUsuario().getId();
@@ -79,7 +87,7 @@ public class AnalisisViewController {
         Map<String, Double> porCategoria = huellas.stream()
                 .collect(Collectors.groupingBy(
                         h -> h.getIdActividad().getIdCategoria().getNombre(),
-                        Collectors.summingDouble(Huella::getValor)
+                        Collectors.summingDouble(h -> h.getValor() * h.getIdActividad().getIdCategoria().getFactorEmision())
                 ));
 
         chartCategorias.getData().clear();
@@ -89,9 +97,8 @@ public class AnalisisViewController {
     }
 
     /**
-     * Gestiona el gráfico de líneas para mostrar la evolución temporal.
-     * Agrupa los datos por mes y año, asegurando un orden cronológico en el eje X
-     * para que la línea de tendencia refleje correctamente el paso del tiempo.
+     * Muestra la evolución temporal del impacto.
+     * CAMBIO: Los puntos del gráfico representan kg de CO₂ reales por mes.
      */
     private void cargarGraficoEvolucion() {
         int userId = Sesion.getInstancia().getUsuario().getId();
@@ -99,16 +106,14 @@ public class AnalisisViewController {
 
         if (huellas == null || huellas.isEmpty()) return;
 
-        // Agrupamos usando YearMonth para no mezclar meses de distintos años
         Map<java.time.YearMonth, Double> porMesAño = huellas.stream()
                 .collect(Collectors.groupingBy(
                         h -> java.time.YearMonth.from(h.getFecha()),
-                        Collectors.summingDouble(Huella::getValor)
+                        Collectors.summingDouble(h -> h.getValor() * h.getIdActividad().getIdCategoria().getFactorEmision())
                 ));
 
         chartEvolucion.getData().clear();
 
-        // Forzamos la limpieza de categorías para evitar fallos de renderizado en JavaFX
         if (chartEvolucion.getXAxis() instanceof CategoryAxis xAxis) {
             xAxis.setAnimated(false);
             xAxis.getCategories().clear();
@@ -117,7 +122,6 @@ public class AnalisisViewController {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("kg CO₂ por mes");
 
-        // Ordenamos las llaves (fechas) y creamos los puntos del gráfico
         porMesAño.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .forEach(entry -> {
@@ -129,13 +133,11 @@ public class AnalisisViewController {
                 });
 
         chartEvolucion.getData().add(series);
-        chartEvolucion.setCreateSymbols(true);
     }
 
     /**
-     * Identifica las 3 actividades con mayor impacto negativo.
-     * Realiza un ranking de las actividades que más CO2 han generado y las
-     * muestra en un listado vertical de forma dinámica.
+     * Identifica las 3 actividades con mayor impacto de CO2.
+     * CAMBIO: El ranking se basa en la contaminación real generada.
      */
     private void cargarTopActividades() {
         vboxTopActividades.getChildren().clear();
@@ -143,7 +145,10 @@ public class AnalisisViewController {
         List<Huella> huellas = huellaService.obtenerHuellasPorUsuario(userId);
 
         huellas.stream()
-                .collect(Collectors.groupingBy(h -> h.getIdActividad().getNombre(), Collectors.summingDouble(Huella::getValor)))
+                .collect(Collectors.groupingBy(
+                        h -> h.getIdActividad().getNombre(),
+                        Collectors.summingDouble(h -> h.getValor() * h.getIdActividad().getIdCategoria().getFactorEmision())
+                ))
                 .entrySet().stream()
                 .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
                 .limit(3)
@@ -154,26 +159,63 @@ public class AnalisisViewController {
                 });
     }
 
-    // --- MÉTODOS DE NAVEGACIÓN ---
+    /**
+     * Exporta el historial a CSV.
+     * MEJORA: Incluye BOM UTF-8 para compatibilidad total con Excel y acentos.
+     */
+    @FXML
+    private void exportarCSV() {
+        List<Huella> datos = huellaService.obtenerHistorial(Sesion.getInstancia().getUsuario().getId());
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Guardar Informe de Huella");
+        fileChooser.setInitialFileName("mi_huella_carbono.csv");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos CSV", "*.csv"));
+
+        File file = fileChooser.showSaveDialog(null);
+
+        if (file != null) {
+            try (FileOutputStream fos = new FileOutputStream(file);
+                 PrintWriter writer = new PrintWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8))) {
+
+                // BOM para Excel (Acentos correctos)
+                fos.write(0xEF); fos.write(0xBB); fos.write(0xBF);
+
+                writer.println("Fecha,Actividad,Categoria,Valor,Unidad,Impacto_kgCO2");
+
+                for (Huella h : datos) {
+                    writer.println(String.format("%s,%s,%s,%.2f,%s,%.2f",
+                            h.getFecha(),
+                            h.getIdActividad().getNombre(),
+                            h.getIdActividad().getIdCategoria().getNombre(),
+                            h.getValor(),
+                            h.getUnidad(),
+                            h.getValor() * h.getIdActividad().getIdCategoria().getFactorEmision()
+                    ));
+                }
+
+                writer.flush();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setContentText("¡Datos exportados con éxito! 🚀");
+                alert.show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     @FXML private void irAInicio() { cambiarEscena("/view/inicio.fxml"); }
     @FXML private void irAMisHuellas() { cambiarEscena("/view/mis_huellas.fxml"); }
     @FXML private void irAHabitos() { cambiarEscena("/view/habitos.fxml"); }
     @FXML private void irARecomendaciones() { cambiarEscena("/view/recomendaciones.fxml"); }
 
-    /**
-     * Cierra la sesión del usuario actual y redirige a la pantalla de Login.
-     */
-    @FXML private void handleLogout() {
+    @FXML
+    private void handleLogout() {
         Sesion.getInstancia().setUsuario(null);
         cambiarEscena("/view/login.fxml");
     }
 
-    /**
-     * Método genérico para el intercambio de escenas en la aplicación.
-     * Carga el archivo FXML solicitado y le aplica la hoja de estilos global.
-     * @param fxml Ruta del archivo de vista a cargar.
-     */
     private void cambiarEscena(String fxml) {
         try {
             Stage stage = (Stage) lblTotal.getScene().getWindow();
@@ -181,6 +223,8 @@ public class AnalisisViewController {
             Scene scene = new Scene(loader.load());
             scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
             stage.setScene(scene);
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

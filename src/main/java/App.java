@@ -30,9 +30,8 @@ public class App extends Application {
             stage.setTitle("EcoTrack - Huella de Carbono");
             stage.setScene(scene);
 
-            // --- CONFIGURACIÓN DE PANTALLA COMPLETA ---
             stage.setMaximized(true);
-            // Si quieres que ni siquiera se vea la barra de arriba (Modo Kiosko):
+
             // stage.setFullScreen(true);
 
             stage.show();

@@ -110,10 +110,15 @@ public class MisHuellasController {
         colFecha.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getFecha() != null ? cellData.getValue().getFecha().toString() : ""));
 
-        colImpacto.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getValor() + " kg CO₂"));
+        colImpacto.setCellValueFactory(cellData -> {
+            Huella h = cellData.getValue();
+            if (h.getIdActividad() != null && h.getIdActividad().getIdCategoria() != null) {
+                double impactoReal = h.getValor() * h.getIdActividad().getIdCategoria().getFactorEmision();
+                return new SimpleStringProperty(String.format("%.2f kg CO₂", impactoReal));
+            }
+            return new SimpleStringProperty("0.00 kg CO₂");
+        });
         colImpacto.getStyleClass().add("impacto-bold");
-
         // Inserción de botones de borrado dinámicos en cada fila
         colAcciones.setCellFactory(param -> new TableCell<>() {
             private final Button btnEliminar = new Button("🗑");
