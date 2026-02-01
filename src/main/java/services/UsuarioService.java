@@ -34,7 +34,7 @@ public class UsuarioService {
     public Usuario login(String email, String password) {
         Usuario usuario = usuarioDAO.buscarPorEmail(email);
 
-        // Comprobación de seguridad: comparamos el texto con el hash cifrado
+        // comparamos el texto con el hash cifrado
         if (usuario != null && BCrypt.checkpw(password, usuario.getContrasena())) {
             return usuario;
         }
@@ -51,7 +51,7 @@ public class UsuarioService {
     public boolean registrarUsuario(Usuario nuevoUsuario) {
         if (usuarioDAO.buscarPorEmail(nuevoUsuario.getEmail()) == null) {
 
-            // Generamos un hash seguro con sal aleatoria (salt) para la contraseña
+            // Generamos un hash seguro para la contraseña
             String hash = BCrypt.hashpw(nuevoUsuario.getContrasena(), BCrypt.gensalt());
             nuevoUsuario.setContrasena(hash);
 

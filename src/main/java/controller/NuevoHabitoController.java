@@ -36,14 +36,11 @@ public class NuevoHabitoController {
      */
     @FXML
     public void initialize() {
-        // Opciones estándar de periodicidad para el usuario
         comboTipo.getItems().setAll("Semanal", "Mensual", "Diario");
 
-        // Carga del catálogo completo de actividades desde la base de datos
         List<Actividad> listaActividades = actividadService.obtenerTodas();
         comboActividades.getItems().setAll(listaActividades);
 
-        // Sincronización visual: asegura que el combo muestre la actividad que motivó la apertura
         if (actividadSugerida != null) {
             Platform.runLater(() -> {
                 for (Actividad a : comboActividades.getItems()) {
@@ -104,7 +101,6 @@ public class NuevoHabitoController {
      */
     @FXML
     private void guardar() {
-        // Verificación de integridad: todos los datos son obligatorios
         if (comboActividades.getValue() == null || comboTipo.getValue() == null || txtFrecuencia.getText().trim().isEmpty()) {
             mostrarAlerta("Campos incompletos", "Por favor, rellena todos los campos.");
             return;
@@ -125,7 +121,6 @@ public class NuevoHabitoController {
             h.setTipo(comboTipo.getValue());
             h.setUltimaFecha(LocalDate.now());
 
-            // Delegación de la persistencia (merge) a la capa de servicio
             if (habitoService.guardar(h)) {
                 System.out.println("Hábito procesado con éxito.");
                 cerrar();

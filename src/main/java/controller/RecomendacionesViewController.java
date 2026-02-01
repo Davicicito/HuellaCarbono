@@ -36,7 +36,6 @@ public class RecomendacionesViewController {
     private void generarRecomendaciones() {
         flowRecomendaciones.getChildren().clear();
 
-        // Catálogo de consejos maestros para el usuario
         List<Consejo> todosLosConsejos = Arrays.asList(
                 new Consejo("Usa bicicleta o camina", "Transporte", "-30 kg CO₂", "🚲"),
                 new Consejo("Opta por transporte público", "Transporte", "-45 kg CO₂", "🚌"),
@@ -78,7 +77,6 @@ public class RecomendacionesViewController {
 
         Label categoria = new Label(c.categoria.toUpperCase());
         categoria.getStyleClass().add("tag-category");
-        // Normalización del nombre de categoría para coincidir con las clases CSS
         categoria.getStyleClass().add("tag-" + c.categoria.toLowerCase().replace("í", "i"));
 
         Label impacto = new Label("Impacto estimado: " + c.impacto);

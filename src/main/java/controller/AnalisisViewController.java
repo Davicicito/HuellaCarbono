@@ -124,7 +124,6 @@ public class AnalisisViewController {
 
         chartEvolucion.getData().clear();
 
-        // Limpiamos el eje X para que JavaFX no se queje al repintar
         if (chartEvolucion.getXAxis() instanceof CategoryAxis xAxis) {
             xAxis.setAnimated(false);
             xAxis.getCategories().clear();
@@ -133,7 +132,7 @@ public class AnalisisViewController {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("kg CO₂ por mes");
 
-        // Ordenamos los meses y les ponemos un nombre bonito (ej: ene. 2026)
+        // Ordenamos los meses
         porMesAño.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
                 .forEach(entry -> {

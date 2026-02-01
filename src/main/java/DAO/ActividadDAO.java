@@ -33,7 +33,7 @@ public class ActividadDAO {
             Query<Actividad> query = session.createQuery(LISTAR_TODAS, Actividad.class);
             return query.getResultList();
         } catch (Exception e) {
-            // Log de error técnico en consola para depuración
+            // Log de error
             System.err.println("Error al recuperar el catálogo de actividades: " + e.getMessage());
             e.printStackTrace();
             return null;

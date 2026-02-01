@@ -37,17 +37,13 @@ public class LoginViewController {
         String email = emailField.getText().trim();
         String pass = passwordField.getText().trim();
 
-        // Verificación básica de que no existan campos vacíos antes de procesar
         if (email.isEmpty() || pass.isEmpty()) {
             mostrarAlerta("Campos vacíos", "⚠️ Por favor, rellena todos los campos.");
             return;
         }
-
-        // Delegación de la validación al servicio de negocio
         Usuario u = usuarioService.login(email, pass);
 
         if (u != null) {
-            // Establecemos el usuario logueado en el Singleton de sesión para uso global
             utils.Sesion.getInstancia().setUsuario(u);
             System.out.println("Login exitoso: " + u.getNombre());
             abrirVista("/view/inicio.fxml");
@@ -74,7 +70,6 @@ public class LoginViewController {
             Stage stage = (Stage) emailField.getScene().getWindow();
             FXMLLoader loader = new FXMLLoader(getClass().getResource(ruta));
             Scene scene = new Scene(loader.load());
-            // Aplicación de la hoja de estilos para mantener la coherencia visual
             scene.getStylesheets().add(getClass().getResource("/style.css").toExternalForm());
             stage.setScene(scene);
             stage.show();

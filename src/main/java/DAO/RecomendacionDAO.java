@@ -28,10 +28,8 @@ public class RecomendacionDAO {
      * o {@code null} si ocurre una anomalía en la conexión.
      */
     public List<Recomendacion> listarPorCategoria(int idCategoria) {
-        // Apertura de sesión mediante el Singleton de conexión
         try (Session session = Connection.getInstance().openSession()) {
             Query<Recomendacion> query = session.createQuery(LISTAR_POR_CATEGORIA, Recomendacion.class);
-            // Asignación segura del parámetro de filtrado
             query.setParameter("idCat", idCategoria);
             return query.getResultList();
         } catch (Exception e) {

@@ -51,7 +51,6 @@ public class HabitosViewController {
 
         List<Habito> habitos = habitoService.misHabitos(userId);
 
-        // Actualizamos la UI en el hilo de JavaFX para evitar problemas de sincronización
         Platform.runLater(() -> {
             if (lblTotalHabitos != null) {
                 lblTotalHabitos.setText(String.valueOf(habitos.size()));

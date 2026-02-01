@@ -80,7 +80,6 @@ public class MisHuellasController {
         colValor.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getValor() + " " + cellData.getValue().getUnidad()));
 
-        // Configuración de celdas personalizadas para la columna Categoría
         colCategoria.setCellFactory(column -> new TableCell<Huella, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -119,7 +118,6 @@ public class MisHuellasController {
             return new SimpleStringProperty("0.00 kg CO₂");
         });
         colImpacto.getStyleClass().add("impacto-bold");
-        // Inserción de botones de borrado dinámicos en cada fila
         colAcciones.setCellFactory(param -> new TableCell<>() {
             private final Button btnEliminar = new Button("🗑");
             {
@@ -149,7 +147,7 @@ public class MisHuellasController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             huellaService.borrarRegistro(h);
-            cargarDatos(); // Refrescamos la tabla tras la eliminación
+            cargarDatos();
         }
     }
 

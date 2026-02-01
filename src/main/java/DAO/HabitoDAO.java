@@ -38,8 +38,6 @@ public class HabitoDAO {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-
-            // Sincronización del estado del objeto con la sesión actual
             session.merge(h);
 
             transaction.commit();

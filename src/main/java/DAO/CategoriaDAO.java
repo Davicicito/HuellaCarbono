@@ -27,7 +27,6 @@ public class CategoriaDAO {
      * y factores de emisión asociados.
      */
     public List<Categoria> listarTodas() {
-        // Utilizamos la sesión de Hibernate para realizar la consulta sobre el modelo de objetos
         try (Session session = Connection.getInstance().openSession()) {
             Query<Categoria> query = session.createQuery(LISTAR_TODAS, Categoria.class);
             return query.getResultList();

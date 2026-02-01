@@ -41,7 +41,6 @@ public class NuevaHuellaController {
         comboUnidades.getSelectionModel().selectFirst();
         datePicker.setValue(LocalDate.now());
 
-        // Configuración del conversor para representar objetos Actividad como texto
         comboActividades.setConverter(new StringConverter<Actividad>() {
             @Override
             public String toString(Actividad act) {
@@ -50,8 +49,6 @@ public class NuevaHuellaController {
             @Override
             public Actividad fromString(String string) { return null; }
         });
-
-        // Carga de actividades disponibles desde el servicio de negocio
         List<Actividad> lista = actividadService.listarTodasLasActividades();
         if (lista != null) {
             comboActividades.getItems().addAll(lista);
@@ -78,9 +75,8 @@ public class NuevaHuellaController {
             h.setFecha(datePicker.getValue());
 
             huellaService.registrarNuevaHuella(h);
-            handleCancelar(); // Cierra la ventana tras el éxito
+            handleCancelar();
         } catch (NumberFormatException e) {
-            // Manejo de error si el valor numérico no es válido
             System.err.println("Error: El valor introducido no es un número válido.");
         } catch (Exception e) {
             e.printStackTrace();

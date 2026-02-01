@@ -37,20 +37,17 @@ public class RegistroViewController {
         String email = emailField.getText().trim();
         String password = passwordField.getText().trim();
 
-        // Validación de campos obligatorios para asegurar la consistencia de los datos
         if (nombre.isEmpty() || email.isEmpty() || password.isEmpty()) {
             mostrarAlerta("Error", "⚠️ Rellena todos los campos");
             return;
         }
 
-        // Creación y mapeo del nuevo objeto de dominio
         Usuario nuevoUsuario = new Usuario();
         nuevoUsuario.setNombre(nombre);
         nuevoUsuario.setEmail(email);
         nuevoUsuario.setContrasena(password);
         nuevoUsuario.setFechaRegistro(LocalDate.now());
 
-        // Delegación de la lógica de registro al servicio, que gestiona posibles duplicados
         if (usuarioService.registrarUsuario(nuevoUsuario)) {
             mostrarAlertaExito();
             irALogin();
